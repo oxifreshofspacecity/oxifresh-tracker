@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Oxi Tracker" />
+  <meta name="theme-color" content="#0a0e1a" />
+  <title>Oxi Fresh Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0a0e1a; color: #e2e8f0; font-family: 'DM Sans', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0e1a; }
+    ::-webkit-scrollbar-thumb { background: #1e2535; border-radius: 4px; }
+    input, select, textarea, button { font-family: inherit; }
+    input[type=date]::-webkit-calendar-picker-indicator { filter: invert(0.4); }
+    select option { background: #161b27; color: #e2e8f0; }
+
+    /* HEADER */
+    .header {
+      position: sticky; top: 0; z-index: 200;
+      background: #0d1221; border-bottom: 1px solid #1e2535;
+      padding: 12px 16px; display: flex; align-items: center;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #4f8ef7, #7c5ef7);
+      display: flex; align-items: center; justify-content: center; font-size: 17px;
+    }
+    .logo-text { font-size: 14px; font-weight: 700; color: #e2e8f0; line-height: 1.2; }
+    .logo-sub { font-size: 10px; color: #475569; }
+    .mode-switch {
+      display: flex; background: #161b27; border-radius: 10px;
+      border: 1px solid #1e2535; padding: 3px; gap: 3px;
+    }
+    .mode-btn {
+      padding: 6px 13px; border-radius: 7px; border: none; cursor: pointer;
+      font-size: 12px; font-weight: 600; transition: all 0.2s;
+    }
+    .mode-btn.active { background: linear-gradient(135deg, #4f8ef7, #7c5ef7); color: #fff; }
+    .mode-btn.inactive { background: transparent; color: #64748b; }
+    .nav-actions { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; align-items: center; }
+    .nav-btn {
+      padding: 7px 13px; border-radius: 8px; border: 1px solid #1e2535;
+      background: transparent; color: #64748b; font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btn.active { border-color: #4f8ef7; background: #4f8ef722; color: #4f8ef7; }
+    .add-btn {
+      padding: 7px 15px; border-radius: 8px; border: none;
+      background: linear-gradient(135deg, #4f8ef7, #7c5ef7);
+      color: #fff; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+
+    /* MODE BANNER */
+    .mode-banner {
+      padding: 8px 16px; border-bottom: 1px solid #1e2535;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mode-banner-text { font-size: 12px; font-weight: 600; }
+    .mode-banner-count { font-size: 11px; color: #475569; }
+
+    /* MAIN */
+    .main { padding: 16px; max-width: 1100px; margin: 0 auto; }
+
+    /* STAT CARDS */
+    .stats-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .stat-card {
+      background: #161b27; border: 1px solid #1e2535; border-radius: 14px;
+      padding: 16px 18px; flex: 1; min-width: 130px;
+    }
+    .stat-label { font-size: 10px; color: #64748b; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .stat-value { font-size: 20px; font-weight: 700; font-family: 'DM Mono', monospace; }
+    .stat-sub { font-size: 10px; color: #475569; margin-top: 3px; }
+
+    /* CHARTS */
+    .charts-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+    .chart-card {
+      background: #161b27; border: 1px solid #1e2535;
+      border-radius: 14px; padding: 16px 18px; flex: 1; min-width: 200px;
+    }
+    .chart-title { font-size: 10px; color: #64748b; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+
+    /* BAR CHART */
+    .bar-chart { display: flex; align-items: flex-end; gap: 5px; height: 80px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .bar-val { font-size: 8px; color: #64748b; font-family: 'DM Mono', monospace; min-height: 12px; }
+    .bar-fill { width: 100%; border-radius: 3px 3px 0 0; transition: height 0.4s; min-height: 0; }
+    .bar-lbl { font-size: 8px; color: #475569; text-align: center; }
+
+    /* DONUT */
+    .donut-row { display: flex; gap: 14px; align-items: center; }
+    .donut-legend { display: flex; flex-direction: column; gap: 5px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .legend-name { font-size: 11px; color: #94a3b8; }
+    .legend-val { font-size: 10px; font-family: 'DM Mono', monospace; color: #e2e8f0; margin-left: auto; padding-left: 8px; }
+
+    /* SUMMARY TABLE */
+    .summary-card {
+      background: #161b27; border: 1px solid #1e2535;
+      border-radius: 14px; padding: 16px 18px; margin-bottom: 16px;
+    }
+    .summary-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+    .summary-item { flex: 1; min-width: 100px; }
+    .summary-item-label { font-size: 10px; color: #475569; margin-bottom: 3px; }
+    .summary-item-val { font-size: 18px; font-weight: 700; font-family: 'DM Mono', monospace; }
+
+    /* ENTRIES */
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+    .filter-btn {
+      padding: 6px 13px; border-radius: 8px; border: 1px solid #1e2535;
+      background: #161b27; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .filter-btn.active { border-color: #4f8ef7; background: #4f8ef722; color: #4f8ef7; }
+    .search-input {
+      margin-left: auto; background: #161b27; border: 1px solid #1e2535;
+      border-radius: 8px; padding: 6px 13px; color: #e2e8f0; font-size: 12px;
+      outline: none; min-width: 160px;
+    }
+    .entry-list { display: flex; flex-direction: column; gap: 8px; }
+    .entry-card {
+      background: #161b27; border: 1px solid #1e2535;
+      border-radius: 12px; padding: 12px 14px;
+      display: flex; align-items: flex-start; gap: 12px;
+      border-left-width: 3px;
+    }
+    .entry-body { flex: 1; min-width: 0; }
+    .entry-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 3px; }
+    .entry-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+    .badge {
+      border-radius: 5px; padding: 2px 7px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap;
+    }
+    .entry-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .entry-date { font-size: 11px; color: #475569; }
+    .entry-note { font-size: 11px; color: #64748b; font-style: italic; }
+    .entry-right { text-align: right; flex-shrink: 0; }
+    .entry-amount { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; }
+    .entry-actions { display: flex; gap: 5px; margin-top: 5px; justify-content: flex-end; }
+    .btn-edit {
+      background: #1e2535; border: none; color: #94a3b8;
+      border-radius: 6px; padding: 3px 9px; font-size: 11px; cursor: pointer;
+    }
+    .btn-del {
+      background: #f8717118; border: 1px solid #f8717133; color: #f87171;
+      border-radius: 6px; padding: 3px 9px; font-size: 11px; cursor: pointer;
+    }
+    .empty { text-align: center; color: #475569; padding: 40px 0; font-size: 14px; }
+
+    /* MODAL */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; padding: 16px;
+    }
+    .modal {
+      background: #0f1420; border: 1px solid #1e2535; border-radius: 18px;
+      padding: 24px; width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: #e2e8f0; }
+    .modal-close {
+      background: #1e2535; border: none; color: #94a3b8;
+      width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 16px;
+    }
+
+    /* FORM */
+    .form-group { display: flex; flex-direction: column; gap: 12px; }
+    .field-label { font-size: 10px; color: #64748b; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+    .field-input {
+      width: 100%; background: #161b27; border: 1px solid #1e2535;
+      border-radius: 10px; padding: 10px 13px; color: #e2e8f0;
+      font-size: 14px; outline: none; color-scheme: dark;
+    }
+    .field-input:focus { border-color: #4f8ef7; }
+    .two-col { display: flex; gap: 10px; }
+    .two-col > div { flex: 1; }
+    .type-toggle { display: flex; gap: 8px; }
+    .type-btn {
+      flex: 1; padding: 9px 0; border-radius: 10px; border: 1px solid;
+      font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .form-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .btn-cancel {
+      flex: 1; padding: 11px; border-radius: 10px; border: 1px solid #1e2535;
+      background: transparent; color: #64748b; cursor: pointer; font-weight: 600;
+    }
+    .btn-save {
+      flex: 2; padding: 11px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, #4f8ef7, #7c5ef7);
+      color: #fff; cursor: pointer; font-weight: 700; font-size: 14px;
+    }
+
+    /* CATEGORY MANAGER */
+    .cat-add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .cat-add-input {
+      flex: 1; background: #161b27; border: 1px solid #1e2535;
+      border-radius: 10px; padding: 9px 13px; color: #e2e8f0;
+      font-size: 14px; outline: none;
+    }
+    .cat-add-btn {
+      padding: 9px 16px; border-radius: 10px; border: none;
+      background: #4f8ef7; color: #fff; font-weight: 700; cursor: pointer;
+    }
+    .cat-grid { display: flex; flex-wrap: wrap; gap: 7px; max-height: 240px; overflow-y: auto; margin-bottom: 14px; }
+    .cat-chip {
+      display: flex; align-items: center; gap: 6px;
+      border-radius: 8px; padding: 5px 11px;
+    }
+    .cat-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .cat-name { font-size: 12px; color: #e2e8f0; }
+    .cat-remove { background: none; border: none; color: #f87171; cursor: pointer; font-size: 14px; line-height: 1; }
+
+    /* LOADING */
+    .loading {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      color: #4f8ef7; font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+<div id="app"><div class="loading">Loading Oxi Fresh Tracker...</div></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const DEFAULT_BIZ_CATS = ["Meta Ads","Google Ads","Supplies","Labor","Fuel","Franchise Fees","Equipment","Vehicle","Insurance","Food","Misc","Other"];
+const DEFAULT_PER_CATS = ["Housing","Food","Transport","Utilities","Entertainment","Healthcare","Misc","Other"];
+const CAT_COLORS = {
+  "Meta Ads":"#4f8ef7","Google Ads":"#f7a94f","Supplies":"#a78bfa","Labor":"#34d399",
+  "Fuel":"#f87171","Franchise Fees":"#60a5fa","Equipment":"#fbbf24","Vehicle":"#c084fc",
+  "Insurance":"#2dd4bf","Food":"#fb923c","Misc":"#94a3b8","Other":"#64748b",
+  "Housing":"#f472b6","Transport":"#38bdf8","Utilities":"#4ade80","Entertainment":"#facc15","Healthcare":"#f97316"
+};
+const getColor = c => CAT_COLORS[c] || "#6366f1";
+const genId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const today = () => new Date().toISOString().slice(0,10);
+const fmtCur = n => "$" + Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = s => { if(!s) return ""; const [y,m,d]=s.split("-"); return `${m}/${d}/${y}`; };
+
+function getWeekRange() {
+  const d = new Date(), day = d.getDay();
+  const start = new Date(d); start.setDate(d.getDate()-day);
+  const end = new Date(start); end.setDate(start.getDate()+6);
+  return { start: start.toISOString().slice(0,10), end: end.toISOString().slice(0,10) };
+}
+function getMonthRange() {
+  const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  return {
+    start: new Date(y,m,1).toISOString().slice(0,10),
+    end: new Date(y,m+1,0).toISOString().slice(0,10)
+  };
+}
+const inRange = (d,s,e) => d >= s && d <= e;
+const sumAmt = (arr,type) => arr.filter(e=>!type||e.type===type).reduce((s,e)=>s+(e.amount||0),0);
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+const LS = {
+  get: k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
+  set: (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let state = {
+  mode: "business",
+  view: "dashboard",
+  showForm: false,
+  showCatMgr: false,
+  editing: null,
+  entryFilter: "all",
+  search: "",
+  bizEntries: LS.get("oxif_biz_entries") || [],
+  perEntries: LS.get("oxif_per_entries") || [],
+  bizCats: LS.get("oxif_biz_cats") || [...DEFAULT_BIZ_CATS],
+  perCats: LS.get("oxif_per_cats") || [...DEFAULT_PER_CATS],
+  newCat: "",
+  form: {}
+};
+
+function entries() { return state.mode==="business" ? state.bizEntries : state.perEntries; }
+function cats() { return state.mode==="business" ? state.bizCats : state.perCats; }
+function saveEntries(arr) {
+  if(state.mode==="business") { state.bizEntries=arr; LS.set("oxif_biz_entries",arr); }
+  else { state.perEntries=arr; LS.set("oxif_per_entries",arr); }
+}
+function saveCats(arr) {
+  if(state.mode==="business") { state.bizCats=arr; LS.set("oxif_biz_cats",arr); }
+  else { state.perCats=arr; LS.set("oxif_per_cats",arr); }
+}
+function defaultForm() {
+  return { type:"expense", date:today(), category:cats()[0], amount:"", description:"", note:"" };
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render() {
+  document.getElementById("app").innerHTML = buildApp();
+  bindEvents();
+}
+
+function buildApp() {
+  return `
+    ${buildHeader()}
+    ${buildBanner()}
+    <div class="main">
+      ${state.view==="dashboard" ? buildDashboard() : buildEntries()}
+    </div>
+    ${state.showForm ? buildFormModal() : ""}
+    ${state.showCatMgr ? buildCatModal() : ""}
+  `;
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+function buildHeader() {
+  return `
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🧹</div>
+      <div>
+        <div class="logo-text">Oxi Fresh Tracker</div>
+        <div class="logo-sub">Houston, TX</div>
+      </div>
+    </div>
+    <div class="mode-switch">
+      <button class="mode-btn ${state.mode==="business"?"active":"inactive"}" data-action="setMode" data-val="business">🏢 Business</button>
+      <button class="mode-btn ${state.mode==="personal"?"active":"inactive"}" data-action="setMode" data-val="personal">🏠 Personal</button>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn ${state.view==="dashboard"?"active":""}" data-action="setView" data-val="dashboard">📊 Dashboard</button>
+      <button class="nav-btn ${state.view==="entries"?"active":""}" data-action="setView" data-val="entries">📋 Entries</button>
+      <button class="nav-btn" data-action="openCatMgr">⚙️ Categories</button>
+      <button class="add-btn" data-action="openForm">+ Add Entry</button>
+    </div>
+  </div>`;
+}
+
+function buildBanner() {
+  const color = state.mode==="business" ? "#4f8ef7" : "#34d399";
+  const label = state.mode==="business"
+    ? "🏢 Business Mode — Oxi Fresh Houston"
+    : "🏠 Personal Mode — Personal Expenses";
+  return `
+  <div class="mode-banner" style="background:${color}08">
+    <span class="mode-banner-text" style="color:${color}">${label}</span>
+    <span class="mode-banner-count">${entries().length} entries total</span>
+  </div>`;
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function buildDashboard() {
+  const ents = entries();
+  const todayStr = today();
+  const week = getWeekRange();
+  const month = getMonthRange();
+  const todayEnts = ents.filter(e=>e.date===todayStr);
+  const weekEnts = ents.filter(e=>inRange(e.date,week.start,week.end));
+  const monthEnts = ents.filter(e=>inRange(e.date,month.start,month.end));
+  const weekNet = sumAmt(weekEnts,"income") - sumAmt(weekEnts,"expense");
+  const monthNet = sumAmt(monthEnts,"income") - sumAmt(monthEnts,"expense");
+
+  // Category breakdown
+  const catMap = {};
+  monthEnts.filter(e=>e.type==="expense").forEach(e=>{ catMap[e.category]=(catMap[e.category]||0)+e.amount; });
+  const catData = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([cat,val])=>({cat,val,color:getColor(cat)}));
+
+  // Weekly bars
+  const days = Array.from({length:7},(_,i)=>{
+    const d = new Date(); d.setDate(d.getDate()-(6-i));
+    const ds = d.toISOString().slice(0,10);
+    const dayExp = ents.filter(e=>e.date===ds&&e.type==="expense").reduce((s,e)=>s+e.amount,0);
+    return { label:["Su","Mo","Tu","We","Th","Fr","Sa"][d.getDay()], val:dayExp, isToday:ds===todayStr };
+  });
+  const maxDay = Math.max(...days.map(d=>d.val), 1);
+
+  return `
+  <div class="stats-grid">
+    ${statCard("Today Expenses", fmtCur(sumAmt(todayEnts,"expense")), null, "#f87171")}
+    ${statCard("Today Income", fmtCur(sumAmt(todayEnts,"income")), null, "#34d399")}
+    ${statCard("Week Net", fmtCur(Math.abs(weekNet)), weekNet>=0?"▲ Profit":"▼ Loss", weekNet>=0?"#34d399":"#f87171")}
+    ${statCard("Month Net", fmtCur(Math.abs(monthNet)), monthNet>=0?"▲ Profit":"▼ Loss", monthNet>=0?"#34d399":"#f87171")}
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Daily Expenses — This Week</div>
+      <div class="bar-chart">
+        ${days.map(d=>`
+          <div class="bar-col">
+            <div class="bar-val">${d.val>0?"$"+(d.val/1000).toFixed(1)+"k":""}</div>
+            <div class="bar-fill" style="height:${Math.max((d.val/maxDay)*60,d.val>0?3:0)}px;background:${d.isToday?"#4f8ef7":"#4f8ef755"}"></div>
+            <div class="bar-lbl">${d.label}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+    ${catData.length>0 ? `
+    <div class="chart-card">
+      <div class="chart-title">Monthly Expenses by Category</div>
+      <div class="donut-row">
+        ${buildDonut(catData)}
+        <div class="donut-legend">
+          ${catData.slice(0,5).map(d=>`
+            <div class="legend-item">
+              <div class="legend-dot" style="background:${d.color}"></div>
+              <span class="legend-name">${d.cat}</span>
+              <span class="legend-val">${fmtCur(d.val)}</span>
+            </div>`).join("")}
+        </div>
+      </div>
+    </div>` : ""}
+  </div>
+  <div class="summary-card">
+    <div class="chart-title">This Month — Summary</div>
+    <div class="summary-row">
+      ${[
+        {label:"Total Income", val:fmtCur(sumAmt(monthEnts,"income")), color:"#34d399"},
+        {label:"Total Expenses", val:fmtCur(sumAmt(monthEnts,"expense")), color:"#f87171"},
+        {label:"Net P&L", val:(monthNet<0?"-":"")+fmtCur(Math.abs(monthNet)), color:monthNet>=0?"#34d399":"#f87171"},
+        {label:"Transactions", val:monthEnts.length, color:"#4f8ef7"}
+      ].map(s=>`
+        <div class="summary-item">
+          <div class="summary-item-label">${s.label}</div>
+          <div class="summary-item-val" style="color:${s.color}">${s.val}</div>
+        </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function statCard(label, value, sub, color) {
+  return `<div class="stat-card">
+    <div class="stat-label">${label}</div>
+    <div class="stat-value" style="color:${color||"#e2e8f0"}">${value}</div>
+    ${sub?`<div class="stat-sub">${sub}</div>`:""}
+  </div>`;
+}
+
+function buildDonut(data) {
+  const total = data.reduce((s,d)=>s+d.val,0);
+  if(!total) return '<div style="width:110px;height:110px;border-radius:50%;background:#1e2535"></div>';
+  const r=40,cx=55,cy=55,circ=2*Math.PI*r;
+  let offset=0;
+  const segs = data.map(d=>{
+    const pct=d.val/total, dash=pct*circ, seg={...d,dash,gap:circ-dash,offset};
+    offset+=dash; return seg;
+  });
+  return `<svg width="110" height="110" viewBox="0 0 110 110">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#1e2535" stroke-width="16"/>
+    ${segs.map(s=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="16"
+      stroke-dasharray="${s.dash} ${s.gap}" stroke-dashoffset="${-s.offset}"
+      transform="rotate(-90 ${cx} ${cy})"/>`).join("")}
+    <text x="${cx}" y="${cy-5}" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="DM Mono">TOTAL</text>
+    <text x="${cx}" y="${cy+9}" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="bold" font-family="DM Mono">$${(total/1000).toFixed(1)}k</text>
+  </svg>`;
+}
+
+// ─── ENTRIES ─────────────────────────────────────────────────────────────────
+function buildEntries() {
+  const all = entries();
+  let filtered = all
+    .filter(e=>state.entryFilter==="all"||e.type===state.entryFilter)
+    .filter(e=>{
+      if(!state.search) return true;
+      const s=state.search.toLowerCase();
+      return (e.description||"").toLowerCase().includes(s)||(e.category||"").toLowerCase().includes(s)||(e.note||"").toLowerCase().includes(s);
+    })
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  return `
+  <div class="filter-row">
+    ${["all","expense","income"].map(f=>`
+      <button class="filter-btn ${state.entryFilter===f?"active":""}" data-action="setFilter" data-val="${f}">
+        ${f==="all"?"All Entries":f==="income"?"💰 Income":"💸 Expenses"}
+      </button>`).join("")}
+    <input class="search-input" placeholder="Search..." id="searchInput" value="${state.search}" />
+  </div>
+  <div class="entry-list">
+    ${filtered.length===0
+      ? `<div class="empty">No entries yet. Tap <strong>+ Add Entry</strong> to get started. 👆</div>`
+      : filtered.map(e=>buildEntryCard(e)).join("")}
+  </div>`;
+}
+
+function buildEntryCard(e) {
+  const isIncome = e.type==="income";
+  const color = isIncome ? "#34d399" : getColor(e.category);
+  const badgeBg = color+"22", badgeBorder = color+"44";
+  return `
+  <div class="entry-card" style="border-left-color:${color}">
+    <div class="entry-body">
+      <div class="entry-top">
+        <span class="entry-name">${e.description||e.category}</span>
+        <span class="badge" style="background:${badgeBg};border:1px solid ${badgeBorder};color:${color}">${e.category}</span>
+      </div>
+      <div class="entry-meta">
+        <span class="entry-date">${fmtDate(e.date)}</span>
+        ${e.note?`<span class="entry-note">📝 ${e.note}</span>`:""}
+      </div>
+    </div>
+    <div class="entry-right">
+      <div class="entry-amount" style="color:${isIncome?"#34d399":"#f87171"}">
+        ${isIncome?"+":"-"}${fmtCur(e.amount)}
+      </div>
+      <div class="entry-actions">
+        <button class="btn-edit" data-action="editEntry" data-id="${e.id}">Edit</button>
+        <button class="btn-del" data-action="deleteEntry" data-id="${e.id}">Del</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── FORM MODAL ──────────────────────────────────────────────────────────────
+function buildFormModal() {
+  const f = state.form;
+  const isIncome = f.type==="income";
+  const catList = cats();
+  return `
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">${state.editing?"Edit Entry":`New ${state.mode==="business"?"Business":"Personal"} Entry`}</div>
+        <button class="modal-close" data-action="closeForm">×</button>
+      </div>
+      <div class="form-group">
+        <div>
+          <div class="field-label">Type</div>
+          <div class="type-toggle">
+            <button class="type-btn" data-action="setFormType" data-val="expense"
+              style="border-color:${!isIncome?"#f87171":"#1e2535"};background:${!isIncome?"#f8717122":"#161b27"};color:${!isIncome?"#f87171":"#475569"}">
+              💸 Expense
+            </button>
+            <button class="type-btn" data-action="setFormType" data-val="income"
+              style="border-color:${isIncome?"#34d399":"#1e2535"};background:${isIncome?"#34d39922":"#161b27"};color:${isIncome?"#34d399":"#475569"}">
+              💰 Income
+            </button>
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <label class="field-label">Date</label>
+            <input type="date" class="field-input" id="formDate" value="${f.date}" />
+          </div>
+          <div>
+            <label class="field-label">Amount ($)</label>
+            <input type="number" min="0" step="0.01" placeholder="0.00" class="field-input" id="formAmount" value="${f.amount}" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Category</label>
+          <select class="field-input" id="formCategory">
+            ${catList.map(c=>`<option value="${c}" ${f.category===c?"selected":""}>${c}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Description</label>
+          <input type="text" placeholder="Brief description..." class="field-input" id="formDesc" value="${f.description||""}" />
+        </div>
+        <div>
+          <label class="field-label">Note / Memo</label>
+          <textarea placeholder="Additional notes..." class="field-input" id="formNote" style="min-height:70px;resize:vertical">${f.note||""}</textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" data-action="closeForm">Cancel</button>
+          <button class="btn-save" data-action="saveEntry">${state.editing?"Update Entry":"Save Entry"}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── CATEGORY MODAL ───────────────────────────────────────────────────────────
+function buildCatModal() {
+  const catList = cats();
+  return `
+  <div class="modal-bg" id="catModalBg">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Manage ${state.mode==="business"?"Business":"Personal"} Categories</div>
+        <button class="modal-close" data-action="closeCatMgr">×</button>
+      </div>
+      <div class="cat-add-row">
+        <input class="cat-add-input" id="newCatInput" placeholder="New category name..." value="${state.newCat}" />
+        <button class="cat-add-btn" data-action="addCat">Add</button>
+      </div>
+      <div class="cat-grid">
+        ${catList.map(c=>`
+          <div class="cat-chip" style="background:${getColor(c)}18;border:1px solid ${getColor(c)}33">
+            <div class="cat-dot" style="background:${getColor(c)}"></div>
+            <span class="cat-name">${c}</span>
+            <button class="cat-remove" data-action="removeCat" data-cat="${c}">×</button>
+          </div>`).join("")}
+      </div>
+      <button class="btn-save" style="width:100%" data-action="closeCatMgr">Done</button>
+    </div>
+  </div>`;
+}
+
+// ─── EVENT BINDING ────────────────────────────────────────────────────────────
+function bindEvents() {
+  // Delegated click handler
+  document.addEventListener("click", handleClick, { once: true });
+
+  // Search input
+  const si = document.getElementById("searchInput");
+  if(si) si.addEventListener("input", e=>{ state.search=e.target.value; render(); });
+
+  // Modal background click to close
+  const mb = document.getElementById("modalBg");
+  if(mb) mb.addEventListener("click", e=>{ if(e.target===mb){ state.showForm=false; state.editing=null; render(); }});
+  const cmb = document.getElementById("catModalBg");
+  if(cmb) cmb.addEventListener("click", e=>{ if(e.target===cmb){ state.showCatMgr=false; render(); }});
+
+  // Category input enter key
+  const ni = document.getElementById("newCatInput");
+  if(ni) ni.addEventListener("keydown", e=>{ if(e.key==="Enter") doAddCat(); });
+}
+
+function handleClick(e) {
+  const btn = e.target.closest("[data-action]");
+  if(!btn) { document.addEventListener("click", handleClick, { once: true }); return; }
+  const action = btn.dataset.action;
+  const val = btn.dataset.val;
+
+  if(action==="setMode") { state.mode=val; state.entryFilter="all"; state.search=""; render(); }
+  else if(action==="setView") { state.view=val; render(); }
+  else if(action==="openForm") { state.editing=null; state.form=defaultForm(); state.showForm=true; render(); }
+  else if(action==="closeForm") { state.showForm=false; state.editing=null; render(); }
+  else if(action==="openCatMgr") { state.showCatMgr=true; render(); }
+  else if(action==="closeCatMgr") { state.showCatMgr=false; state.newCat=""; render(); }
+  else if(action==="setMode") { state.mode=val; render(); }
+  else if(action==="setView") { state.view=val; render(); }
+  else if(action==="setFormType") { state.form.type=val; render(); }
+  else if(action==="setFilter") { state.entryFilter=val; render(); }
+  else if(action==="saveEntry") doSaveEntry();
+  else if(action==="editEntry") doEditEntry(btn.dataset.id);
+  else if(action==="deleteEntry") doDeleteEntry(btn.dataset.id);
+  else if(action==="addCat") doAddCat();
+  else if(action==="removeCat") doRemoveCat(btn.dataset.cat);
+  else { document.addEventListener("click", handleClick, { once: true }); }
+}
+
+function readForm() {
+  return {
+    type: state.form.type,
+    date: document.getElementById("formDate")?.value || today(),
+    amount: parseFloat(document.getElementById("formAmount")?.value||"0"),
+    category: document.getElementById("formCategory")?.value || cats()[0],
+    description: document.getElementById("formDesc")?.value?.trim() || "",
+    note: document.getElementById("formNote")?.value?.trim() || ""
+  };
+}
+
+function doSaveEntry() {
+  const f = readForm();
+  if(!f.amount || f.amount <= 0) { alert("Please enter a valid amount."); return; }
+  if(!f.category) { alert("Please select a category."); return; }
+  let arr = [...entries()];
+  if(state.editing) {
+    arr = arr.map(e=>e.id===state.editing ? {...f, id:state.editing} : e);
+  } else {
+    arr.unshift({...f, id:genId()});
+  }
+  saveEntries(arr);
+  state.showForm=false; state.editing=null; state.view="entries";
+  render();
+}
+
+function doEditEntry(id) {
+  const e = entries().find(x=>x.id===id);
+  if(!e) return;
+  state.editing=id;
+  state.form={...e};
+  state.showForm=true;
+  render();
+}
+
+function doDeleteEntry(id) {
+  if(!confirm("Delete this entry?")) return;
+  saveEntries(entries().filter(e=>e.id!==id));
+  render();
+}
+
+function doAddCat() {
+  const input = document.getElementById("newCatInput");
+  const v = (input?.value||state.newCat).trim();
+  if(!v) return;
+  const current = cats();
+  if(current.includes(v)) { alert("Category already exists."); return; }
+  saveCats([...current, v]);
+  state.newCat="";
+  render();
+}
+
+function doRemoveCat(cat) {
+  const current = cats();
+  if(current.length<=2) { alert("Keep at least 2 categories."); return; }
+  if(!confirm(`Remove "${cat}"?`)) return;
+  saveCats(current.filter(c=>c!==cat));
+  render();
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
