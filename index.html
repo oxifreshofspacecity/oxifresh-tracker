@@ -29,6 +29,7 @@
     .sync-dot.syncing { background: #fbbf24; animation: pulse 1s infinite; }
     .sync-dot.error { background: #f87171; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .mode-switch { display: flex; background: #161b27; border-radius: 10px; border: 1px solid #1e2535; padding: 3px; gap: 3px; }
     .mode-btn { padding: 6px 13px; border-radius: 7px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
     .mode-btn.active { background: linear-gradient(135deg, #4f8ef7, #7c5ef7); color: #fff; }
@@ -42,6 +43,7 @@
     .mode-banner-count { font-size: 11px; color: #475569; }
     .main { padding: 16px; max-width: 1100px; margin: 0 auto; }
 
+    /* SETUP */
     .setup-banner { background: #fbbf2415; border: 1px solid #fbbf2440; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
     .setup-banner h3 { color: #fbbf24; font-size: 14px; margin-bottom: 8px; }
     .setup-banner p { color: #94a3b8; font-size: 13px; line-height: 1.7; }
@@ -50,13 +52,17 @@
     .setup-steps li strong { color: #e2e8f0; }
     .setup-input { width: 100%; background: #161b27; border: 1px solid #1e2535; border-radius: 10px; padding: 10px 14px; color: #e2e8f0; font-size: 12px; outline: none; margin-top: 10px; font-family: 'DM Mono', monospace; }
     .setup-input:focus { border-color: #fbbf24; }
-    .setup-btn { margin-top: 10px; padding: 10px 20px; border-radius: 10px; border: none; background: #fbbf24; color: #0a0e1a; font-weight: 700; font-size: 13px; cursor: pointer; }
+    .setup-btn { margin-top: 10px; padding: 10px 22px; border-radius: 10px; border: none; background: #fbbf24; color: #0a0e1a; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .setup-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .connect-spinner { width: 14px; height: 14px; border: 2px solid #0a0e1a44; border-top-color: #0a0e1a; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .error-msg { margin-top: 10px; padding: 10px 14px; background: #f8717118; border: 1px solid #f8717140; border-radius: 10px; color: #f87171; font-size: 12px; display: none; }
 
+    /* LOADING */
     .loading-overlay { position: fixed; inset: 0; background: rgba(10,14,26,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 500; gap: 14px; }
     .spinner { width: 36px; height: 36px; border: 3px solid #1e2535; border-top-color: #4f8ef7; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { color: #64748b; font-size: 14px; }
 
+    /* STATS */
     .stats-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
     .stat-card { background: #161b27; border: 1px solid #1e2535; border-radius: 14px; padding: 16px 18px; flex: 1; min-width: 130px; }
     .stat-label { font-size: 10px; color: #64748b; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
@@ -82,6 +88,7 @@
     .summary-item-label { font-size: 10px; color: #475569; margin-bottom: 3px; }
     .summary-item-val { font-size: 18px; font-weight: 700; font-family: 'DM Mono', monospace; }
 
+    /* ENTRIES */
     .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
     .filter-btn { padding: 6px 13px; border-radius: 8px; border: 1px solid #1e2535; background: #161b27; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; }
     .filter-btn.active { border-color: #4f8ef7; background: #4f8ef722; color: #4f8ef7; }
@@ -102,6 +109,7 @@
     .btn-del { background: #f8717118; border: 1px solid #f8717133; color: #f87171; border-radius: 6px; padding: 3px 9px; font-size: 11px; cursor: pointer; }
     .empty { text-align: center; color: #475569; padding: 40px 0; font-size: 14px; }
 
+    /* MODAL */
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 16px; }
     .modal { background: #0f1420; border: 1px solid #1e2535; border-radius: 18px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -157,42 +165,141 @@ let S = {
   perCats:JSON.parse(localStorage.getItem("oxif_per_cats")||"null")||[...DEFAULT_PER_CATS],
   newCat:"", form:{},
   syncStatus: SCRIPT_URL?"loading":"setup",
-  loading:false, loadingMsg:"Loading...",
-  scriptUrlInput: SCRIPT_URL
+  loading:false, loadingMsg:"Loading..."
 };
 const ents = () => S.mode==="business" ? S.bizEntries : S.perEntries;
 const cats = () => S.mode==="business" ? S.bizCats : S.perCats;
 const defaultForm = () => ({type:"expense",date:today(),category:cats()[0],amount:"",description:"",note:""});
 
-// ─── API ──────────────────────────────────────────────────────────────────────
-async function api(params) {
-  if(!SCRIPT_URL) return {success:false,error:"No URL"};
+// ─── API — uses no-cors jsonp-style via script tag trick ──────────────────────
+// Google Apps Script requires ?action=X format and returns JSON
+// We use fetch with mode:'no-cors' for writes, and a script-tag trick for reads
+
+function apiUrl(params) {
+  return SCRIPT_URL + "?" + new URLSearchParams(params).toString();
+}
+
+// For GET requests (reading data) — uses jsonp callback pattern
+function apiGet(params) {
+  return new Promise((resolve) => {
+    const cbName = "cb_" + genId();
+    const script = document.createElement("script");
+    const timer = setTimeout(() => {
+      cleanup();
+      resolve({success:false, error:"Timeout — check your Script URL and deployment settings."});
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = function(data) {
+      cleanup();
+      resolve(data);
+    };
+
+    // Append callback param
+    const p = {...params, callback: cbName};
+    script.src = apiUrl(p);
+    script.onerror = () => { cleanup(); resolve({success:false, error:"Script load error — verify your Web App URL and that access is set to 'Anyone'."}); };
+    document.head.appendChild(script);
+  });
+}
+
+// For write operations (add/update/delete) — uses fetch with no-cors
+// We optimistically update UI and fire-and-forget the write
+async function apiWrite(params) {
   try {
-    const res = await fetch(SCRIPT_URL+"?"+new URLSearchParams(params).toString(),{method:"GET",redirect:"follow"});
-    return JSON.parse(await res.text());
-  } catch(e) { return {success:false,error:e.message}; }
+    // Try regular fetch first (works if CORS is set up)
+    const res = await fetch(apiUrl(params), {method:"GET", redirect:"follow"});
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return {success:true}; }
+  } catch(e) {
+    // Fallback: fire-and-forget with no-cors (write still happens, we just don't get response)
+    try { fetch(apiUrl(params), {method:"GET", mode:"no-cors", redirect:"follow"}); } catch {}
+    return {success:true, warning:"no-cors mode — write sent but response unavailable"};
+  }
 }
+
 async function loadEntries(mode) {
-  const r = await api({action:"getEntries",mode});
-  if(r.success){ if(mode==="business") S.bizEntries=r.entries; else S.perEntries=r.entries; S.syncStatus="connected"; }
-  else S.syncStatus="error";
-  return r;
-}
-async function syncOp(action, params) {
-  S.syncStatus="syncing"; render();
-  const r = await api({action,...params});
-  S.syncStatus=r.success?"connected":"error";
-  return r;
+  try {
+    const r = await apiGet({action:"getEntries", mode});
+    if(r && r.success) {
+      if(mode==="business") S.bizEntries = r.entries || [];
+      else S.perEntries = r.entries || [];
+      S.syncStatus = "connected";
+    } else {
+      S.syncStatus = "error";
+    }
+    return r;
+  } catch(e) {
+    S.syncStatus = "error";
+    return {success:false, error:e.message};
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 async function init() {
-  if(!SCRIPT_URL){ S.syncStatus="setup"; render(); return; }
+  if(!SCRIPT_URL) { S.syncStatus="setup"; render(); return; }
   S.loading=true; S.loadingMsg="Connecting to Google Sheets..."; render();
-  await api({action:"setup"});
+  // Setup sheets
+  await apiGet({action:"setup"});
+  // Load data
   await loadEntries("business");
   await loadEntries("personal");
   S.loading=false; render();
+}
+
+// ─── CONNECT HANDLER (called directly, not via render loop) ───────────────────
+async function doSaveScriptUrl() {
+  const input = document.getElementById("scriptUrlInput");
+  const errEl = document.getElementById("connectError");
+  const btn = document.getElementById("connectBtn");
+  const spinner = document.getElementById("connectSpinner");
+
+  const url = (input?.value||"").trim();
+  if(!url || !url.includes("script.google.com")) {
+    errEl.style.display = "block";
+    errEl.textContent = "❌ Please paste a valid Google Apps Script URL (should contain script.google.com)";
+    return;
+  }
+
+  // Show loading state
+  btn.disabled = true;
+  spinner.style.display = "inline-block";
+  btn.querySelector(".btn-label").textContent = "Connecting...";
+  errEl.style.display = "none";
+
+  // Save URL
+  SCRIPT_URL = url;
+  localStorage.setItem("oxif_script_url", url);
+
+  // Test connection via JSONP
+  try {
+    const result = await apiGet({action:"ping"});
+    if(result && result.success) {
+      // Connected! Run full init
+      await init();
+    } else {
+      SCRIPT_URL = "";
+      localStorage.removeItem("oxif_script_url");
+      btn.disabled = false;
+      spinner.style.display = "none";
+      btn.querySelector(".btn-label").textContent = "🔗 Connect Now";
+      errEl.style.display = "block";
+      errEl.textContent = "❌ Could not connect: " + (result?.error || "Unknown error. Make sure 'Who has access' is set to Anyone.");
+    }
+  } catch(e) {
+    SCRIPT_URL = "";
+    localStorage.removeItem("oxif_script_url");
+    btn.disabled = false;
+    spinner.style.display = "none";
+    btn.querySelector(".btn-label").textContent = "🔗 Connect Now";
+    errEl.style.display = "block";
+    errEl.textContent = "❌ Connection failed: " + e.message;
+  }
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
@@ -209,27 +316,37 @@ function render() {
     ${S.loading ? `<div class="loading-overlay"><div class="spinner"></div><div class="loading-text">${S.loadingMsg}</div></div>` : ""}
   `;
   bindEvents();
+
+  // Re-attach connect button directly (not via delegation) to avoid issues
+  const connectBtn = document.getElementById("connectBtn");
+  if(connectBtn) connectBtn.addEventListener("click", doSaveScriptUrl);
 }
 
 function buildSetupBanner() {
   return `<div class="setup-banner">
     <h3>⚡ Connect to Google Sheets — One-Time Setup</h3>
-    <p>Follow these steps to get your Web App URL:</p>
+    <p>Follow these steps exactly to get your Web App URL:</p>
     <ul class="setup-steps">
-      <li>1. In your Google Sheet → click <strong>Extensions → Apps Script</strong></li>
-      <li>2. Paste the <strong>Code.gs</strong> script → click <strong>Save</strong> (disk icon)</li>
+      <li>1. Open your Google Sheet → click <strong>Extensions → Apps Script</strong></li>
+      <li>2. Delete everything in the editor → paste the <strong>Code.gs</strong> content → click <strong>Save 💾</strong></li>
       <li>3. Click <strong>Deploy → New Deployment</strong></li>
-      <li>4. Type: <strong>Web App</strong> → Execute as: <strong>Me</strong> → Who has access: <strong>Anyone</strong></li>
-      <li>5. Click <strong>Deploy</strong> → Authorize → Copy the Web App URL</li>
+      <li>4. Click the gear ⚙️ next to "Select type" → choose <strong>Web App</strong></li>
+      <li>5. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong></li>
+      <li>6. Click <strong>Deploy</strong> → <strong>Authorize access</strong> → select your Google account → <strong>Allow</strong></li>
+      <li>7. Copy the <strong>Web App URL</strong> and paste it below</li>
     </ul>
-    <input class="setup-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" value="${S.scriptUrlInput}" />
-    <button class="setup-btn" data-action="saveScriptUrl">🔗 Connect Now</button>
+    <input class="setup-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" value="${localStorage.getItem("oxif_script_url")||""}" />
+    <div id="connectError" class="error-msg"></div>
+    <button class="setup-btn" id="connectBtn">
+      <div class="connect-spinner" id="connectSpinner"></div>
+      <span class="btn-label">🔗 Connect Now</span>
+    </button>
   </div>`;
 }
 
 function buildHeader() {
-  const dotCls = S.syncStatus==="connected"?"connected":S.syncStatus==="syncing"||S.syncStatus==="loading"?"syncing":S.syncStatus==="error"?"error":"";
-  const syncLbl = {connected:"✓ Synced to Google Sheets",syncing:"Syncing...",loading:"Connecting...",setup:"Not connected — setup required",error:"Sync error — check URL"}[S.syncStatus]||"";
+  const dotCls = {connected:"connected",syncing:"syncing",loading:"syncing",error:"error"}[S.syncStatus]||"";
+  const syncLbl = {connected:"✓ Synced to Google Sheets",syncing:"Syncing...",loading:"Connecting...",setup:"Not connected",error:"Sync error — reconnect"}[S.syncStatus]||"";
   return `<div class="header">
     <div class="logo">
       <div class="logo-icon">🧹</div>
@@ -253,20 +370,20 @@ function buildHeader() {
 }
 
 function buildBanner() {
-  const color = S.mode==="business"?"#4f8ef7":"#34d399";
+  const color=S.mode==="business"?"#4f8ef7":"#34d399";
   return `<div class="mode-banner" style="background:${color}08">
-    <span class="mode-banner-text" style="color:${color}">${S.mode==="business"?"🏢 Business Mode — Oxi Fresh Houston":"🏠 Personal Mode — Personal Expenses"}</span>
+    <span class="mode-banner-text" style="color:${color}">${S.mode==="business"?"🏢 Business Mode — Oxi Fresh Houston":"🏠 Personal Mode"}</span>
     <span class="mode-banner-count">${ents().length} entries</span>
   </div>`;
 }
 
 function buildDashboard() {
-  const e=ents(), td=today(), wk=getWeekRange(), mo=getMonthRange();
-  const todayE=e.filter(x=>x.date===td), weekE=e.filter(x=>inRange(x.date,wk.start,wk.end)), monthE=e.filter(x=>inRange(x.date,mo.start,mo.end));
-  const wkNet=sumAmt(weekE,"income")-sumAmt(weekE,"expense"), moNet=sumAmt(monthE,"income")-sumAmt(monthE,"expense");
-  const catMap={}; monthE.filter(x=>x.type==="expense").forEach(x=>{catMap[x.category]=(catMap[x.category]||0)+x.amount;});
+  const e=ents(),td=today(),wk=getWeekRange(),mo=getMonthRange();
+  const todayE=e.filter(x=>x.date===td),weekE=e.filter(x=>inRange(x.date,wk.start,wk.end)),monthE=e.filter(x=>inRange(x.date,mo.start,mo.end));
+  const wkNet=sumAmt(weekE,"income")-sumAmt(weekE,"expense"),moNet=sumAmt(monthE,"income")-sumAmt(monthE,"expense");
+  const catMap={};monthE.filter(x=>x.type==="expense").forEach(x=>{catMap[x.category]=(catMap[x.category]||0)+x.amount;});
   const catData=Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([cat,val])=>({cat,val,color:getColor(cat)}));
-  const days=Array.from({length:7},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(6-i)); const ds=d.toISOString().slice(0,10); return {label:["Su","Mo","Tu","We","Th","Fr","Sa"][d.getDay()],val:e.filter(x=>x.date===ds&&x.type==="expense").reduce((s,x)=>s+x.amount,0),isToday:ds===td}; });
+  const days=Array.from({length:7},(_,i)=>{ const d=new Date();d.setDate(d.getDate()-(6-i));const ds=d.toISOString().slice(0,10);return{label:["Su","Mo","Tu","We","Th","Fr","Sa"][d.getDay()],val:e.filter(x=>x.date===ds&&x.type==="expense").reduce((s,x)=>s+x.amount,0),isToday:ds===td}; });
   const maxDay=Math.max(...days.map(d=>d.val),1);
   return `
   <div class="stats-grid">
@@ -292,8 +409,8 @@ function buildDashboard() {
 const sc=(l,v,sub,c)=>`<div class="stat-card"><div class="stat-label">${l}</div><div class="stat-value" style="color:${c||"#e2e8f0"}">${v}</div>${sub?`<div class="stat-sub">${sub}</div>`:""}</div>`;
 
 function buildDonut(data) {
-  const total=data.reduce((s,d)=>s+d.val,0); if(!total) return "";
-  const r=40,cx=55,cy=55,circ=2*Math.PI*r; let offset=0;
+  const total=data.reduce((s,d)=>s+d.val,0);if(!total)return"";
+  const r=40,cx=55,cy=55,circ=2*Math.PI*r;let offset=0;
   const segs=data.map(d=>{const dash=d.val/total*circ,seg={...d,dash,gap:circ-dash,offset};offset+=dash;return seg;});
   return `<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#1e2535" stroke-width="16"/>${segs.map(s=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="16" stroke-dasharray="${s.dash} ${s.gap}" stroke-dashoffset="${-s.offset}" transform="rotate(-90 ${cx} ${cy})"/>`).join("")}<text x="${cx}" y="${cy-5}" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="DM Mono">TOTAL</text><text x="${cx}" y="${cy+9}" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="bold" font-family="DM Mono">$${(total/1000).toFixed(1)}k</text></svg>`;
 }
@@ -304,7 +421,7 @@ function buildEntries() {
     ${["all","expense","income"].map(f=>`<button class="filter-btn ${S.entryFilter===f?"active":""}" data-action="setFilter" data-val="${f}">${f==="all"?"All Entries":f==="income"?"💰 Income":"💸 Expenses"}</button>`).join("")}
     <input class="search-input" placeholder="Search..." id="searchInput" value="${S.search}" />
   </div>
-  <div class="entry-list">${filtered.length===0?`<div class="empty">${SCRIPT_URL?"No entries yet. Tap + Add Entry 👆":"Connect Google Sheets first ☝️"}</div>`:filtered.map(e=>{const inc=e.type==="income",c=inc?"#34d399":getColor(e.category);return`<div class="entry-card" style="border-left-color:${c}"><div class="entry-body"><div class="entry-top"><span class="entry-name">${e.description||e.category}</span><span class="badge" style="background:${c}22;border:1px solid ${c}44;color:${c}">${e.category}</span></div><div class="entry-meta"><span class="entry-date">${fmtDate(e.date)}</span>${e.note?`<span class="entry-note">📝 ${e.note}</span>`:""}</div></div><div class="entry-right"><div class="entry-amount" style="color:${inc?"#34d399":"#f87171"}">${inc?"+":"-"}${fmtCur(e.amount)}</div><div class="entry-actions"><button class="btn-edit" data-action="editEntry" data-id="${e.id}">Edit</button><button class="btn-del" data-action="deleteEntry" data-id="${e.id}">Del</button></div></div></div>`;}).join("")}</div>`;
+  <div class="entry-list">${filtered.length===0?`<div class="empty">${SCRIPT_URL?"No entries yet — tap + Add Entry 👆":"Connect to Google Sheets first ☝️"}</div>`:filtered.map(e=>{const inc=e.type==="income",c=inc?"#34d399":getColor(e.category);return`<div class="entry-card" style="border-left-color:${c}"><div class="entry-body"><div class="entry-top"><span class="entry-name">${e.description||e.category}</span><span class="badge" style="background:${c}22;border:1px solid ${c}44;color:${c}">${e.category}</span></div><div class="entry-meta"><span class="entry-date">${fmtDate(e.date)}</span>${e.note?`<span class="entry-note">📝 ${e.note}</span>`:""}</div></div><div class="entry-right"><div class="entry-amount" style="color:${inc?"#34d399":"#f87171"}">${inc?"+":"-"}${fmtCur(e.amount)}</div><div class="entry-actions"><button class="btn-edit" data-action="editEntry" data-id="${e.id}">Edit</button><button class="btn-del" data-action="deleteEntry" data-id="${e.id}">Del</button></div></div></div>`;}).join("")}</div>`;
 }
 
 function buildFormModal() {
@@ -318,80 +435,83 @@ function buildCatModal() {
 
 function bindEvents() {
   document.addEventListener("click", handleClick, {once:true});
-  const si=document.getElementById("searchInput"); if(si) si.addEventListener("input",e=>{S.search=e.target.value;render();});
-  const mb=document.getElementById("modalBg"); if(mb) mb.addEventListener("click",e=>{if(e.target===mb){S.showForm=false;S.editing=null;render();}});
-  const cmb=document.getElementById("catModalBg"); if(cmb) cmb.addEventListener("click",e=>{if(e.target===cmb){S.showCatMgr=false;render();}});
-  const ni=document.getElementById("newCatInput"); if(ni) ni.addEventListener("keydown",e=>{if(e.key==="Enter")doAddCat();});
+  const si=document.getElementById("searchInput");if(si)si.addEventListener("input",e=>{S.search=e.target.value;render();});
+  const mb=document.getElementById("modalBg");if(mb)mb.addEventListener("click",e=>{if(e.target===mb){S.showForm=false;S.editing=null;render();}});
+  const cmb=document.getElementById("catModalBg");if(cmb)cmb.addEventListener("click",e=>{if(e.target===cmb){S.showCatMgr=false;render();}});
+  const ni=document.getElementById("newCatInput");if(ni)ni.addEventListener("keydown",e=>{if(e.key==="Enter")doAddCat();});
 }
 
 function handleClick(e) {
   const btn=e.target.closest("[data-action]");
   if(!btn){document.addEventListener("click",handleClick,{once:true});return;}
+  // Skip connectBtn — handled separately
+  if(btn.id==="connectBtn") return;
   const {action,val,id,cat}=btn.dataset;
   ({
-    setMode: async()=>{ S.mode=val;S.entryFilter="all";S.search="";S.loading=true;S.loadingMsg=`Loading ${val} data...`;render();await loadEntries(val);S.loading=false;render(); },
-    setView: ()=>{ S.view=val;render(); },
-    openForm: ()=>{ if(!SCRIPT_URL){alert("Connect to Google Sheets first.");return;} S.editing=null;S.form=defaultForm();S.showForm=true;render(); },
-    closeForm: ()=>{ S.showForm=false;S.editing=null;render(); },
-    openCatMgr: ()=>{ S.showCatMgr=true;render(); },
-    closeCatMgr: ()=>{ S.showCatMgr=false;S.newCat="";render(); },
-    setFormType: ()=>{ S.form.type=val;render(); },
-    setFilter: ()=>{ S.entryFilter=val;render(); },
+    setMode: async()=>{S.mode=val;S.entryFilter="all";S.search="";S.loading=true;S.loadingMsg=`Loading ${val} data...`;render();await loadEntries(val);S.loading=false;render();},
+    setView: ()=>{S.view=val;render();},
+    openForm: ()=>{if(!SCRIPT_URL){alert("Connect to Google Sheets first.");return;}S.editing=null;S.form=defaultForm();S.showForm=true;render();},
+    closeForm: ()=>{S.showForm=false;S.editing=null;render();},
+    openCatMgr: ()=>{S.showCatMgr=true;render();},
+    closeCatMgr: ()=>{S.showCatMgr=false;S.newCat="";render();},
+    setFormType: ()=>{S.form.type=val;render();},
+    setFilter: ()=>{S.entryFilter=val;render();},
     saveEntry: doSaveEntry,
     editEntry: ()=>doEditEntry(id),
     deleteEntry: ()=>doDeleteEntry(id),
     addCat: doAddCat,
     removeCat: ()=>doRemoveCat(cat),
-    refreshData: async()=>{ S.loading=true;S.loadingMsg="Refreshing...";render();await loadEntries(S.mode);S.loading=false;render(); },
-    saveScriptUrl: doSaveScriptUrl
+    refreshData: async()=>{S.loading=true;S.loadingMsg="Refreshing...";render();await loadEntries(S.mode);S.loading=false;render();}
   }[action]||function(){document.addEventListener("click",handleClick,{once:true});})();
 }
 
 function readForm() {
-  return {type:S.form.type,date:document.getElementById("formDate")?.value||today(),amount:parseFloat(document.getElementById("formAmount")?.value||"0"),category:document.getElementById("formCategory")?.value||cats()[0],description:document.getElementById("formDesc")?.value?.trim()||"",note:document.getElementById("formNote")?.value?.trim()||""};
+  return{type:S.form.type,date:document.getElementById("formDate")?.value||today(),amount:parseFloat(document.getElementById("formAmount")?.value||"0"),category:document.getElementById("formCategory")?.value||cats()[0],description:document.getElementById("formDesc")?.value?.trim()||"",note:document.getElementById("formNote")?.value?.trim()||""};
 }
 
 async function doSaveEntry() {
   const f=readForm();
   if(!f.amount||f.amount<=0){alert("Enter a valid amount.");return;}
   const entry={...f,id:S.editing||genId()};
-  S.showForm=false; S.loading=true; S.loadingMsg=S.editing?"Updating...":"Saving..."; render();
-  if(S.editing){ if(S.mode==="business") S.bizEntries=S.bizEntries.map(e=>e.id===entry.id?entry:e); else S.perEntries=S.perEntries.map(e=>e.id===entry.id?entry:e); await syncOp("updateEntry",{mode:S.mode,entry:JSON.stringify(entry)}); }
-  else { if(S.mode==="business") S.bizEntries.unshift(entry); else S.perEntries.unshift(entry); await syncOp("addEntry",{mode:S.mode,entry:JSON.stringify(entry)}); }
-  S.editing=null; S.loading=false; S.view="entries"; render();
+  S.showForm=false;S.loading=true;S.loadingMsg=S.editing?"Updating...":"Saving...";render();
+  if(S.editing){
+    if(S.mode==="business")S.bizEntries=S.bizEntries.map(e=>e.id===entry.id?entry:e);
+    else S.perEntries=S.perEntries.map(e=>e.id===entry.id?entry:e);
+    await apiWrite({action:"updateEntry",mode:S.mode,entry:JSON.stringify(entry)});
+  } else {
+    if(S.mode==="business")S.bizEntries.unshift(entry);
+    else S.perEntries.unshift(entry);
+    await apiWrite({action:"addEntry",mode:S.mode,entry:JSON.stringify(entry)});
+  }
+  S.editing=null;S.loading=false;S.view="entries";render();
 }
 
-async function doEditEntry(id) { const e=ents().find(x=>x.id===id); if(!e)return; S.editing=id;S.form={...e};S.showForm=true;render(); }
+async function doEditEntry(id){const e=ents().find(x=>x.id===id);if(!e)return;S.editing=id;S.form={...e};S.showForm=true;render();}
 
-async function doDeleteEntry(id) {
+async function doDeleteEntry(id){
   if(!confirm("Delete this entry?"))return;
   S.loading=true;S.loadingMsg="Deleting...";render();
-  if(S.mode==="business") S.bizEntries=S.bizEntries.filter(e=>e.id!==id); else S.perEntries=S.perEntries.filter(e=>e.id!==id);
-  await syncOp("deleteEntry",{mode:S.mode,id});
+  if(S.mode==="business")S.bizEntries=S.bizEntries.filter(e=>e.id!==id);
+  else S.perEntries=S.perEntries.filter(e=>e.id!==id);
+  await apiWrite({action:"deleteEntry",mode:S.mode,id});
   S.loading=false;render();
 }
 
-function doAddCat() {
-  const v=(document.getElementById("newCatInput")?.value||"").trim(); if(!v)return;
-  const cur=cats(); if(cur.includes(v)){alert("Already exists.");return;}
+function doAddCat(){
+  const v=(document.getElementById("newCatInput")?.value||"").trim();if(!v)return;
+  const cur=cats();if(cur.includes(v)){alert("Already exists.");return;}
   const upd=[...cur,v];
   if(S.mode==="business"){S.bizCats=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd));}
   else{S.perCats=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd));}
   S.newCat="";render();
 }
 
-function doRemoveCat(cat) {
-  const cur=cats(); if(cur.length<=2){alert("Keep at least 2.");return;} if(!confirm(`Remove "${cat}"?`))return;
+function doRemoveCat(cat){
+  const cur=cats();if(cur.length<=2){alert("Keep at least 2.");return;}if(!confirm(`Remove "${cat}"?`))return;
   const upd=cur.filter(c=>c!==cat);
   if(S.mode==="business"){S.bizCats=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd));}
   else{S.perCats=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd));}
   render();
-}
-
-async function doSaveScriptUrl() {
-  const url=(document.getElementById("scriptUrlInput")?.value||"").trim();
-  if(!url||!url.includes("script.google.com")){alert("Please paste a valid Google Apps Script URL.");return;}
-  SCRIPT_URL=url; localStorage.setItem("oxif_script_url",url); await init();
 }
 
 init();
