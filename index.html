@@ -1,1 +1,244 @@
+// ─── OXI FRESH TRACKER — GOOGLE APPS SCRIPT ──────────────────────────────────
+// STEP 1: Paste this into Extensions > Apps Script — replace ALL existing code
+// STEP 2: Save (Ctrl+S)
+// STEP 3: Deploy > New Deployment > Web App
+//          Execute as: Me | Who has access: Anyone
+// STEP 4: Copy the Web App URL into the app
 
+function doGet(e) {
+  var params = e.parameter;
+  var action = params.action;
+  var callback = params.callback; // JSONP support
+  var result;
+
+  try {
+    if (action === "ping") {
+      result = { success: true, message: "Connected!" };
+
+    } else if (action === "setup") {
+      setupSheets();
+      result = { success: true, message: "Sheets ready" };
+
+    } else if (action === "getEntries") {
+      result = getEntries(params.mode);
+
+    } else if (action === "addEntry") {
+      result = addEntry(params.mode, JSON.parse(params.entry));
+
+    } else if (action === "updateEntry") {
+      result = updateEntry(params.mode, JSON.parse(params.entry));
+
+    } else if (action === "deleteEntry") {
+      result = deleteEntry(params.mode, params.id);
+
+    } else {
+      result = { success: false, error: "Unknown action: " + action };
+    }
+
+  } catch (err) {
+    result = { success: false, error: err.toString() };
+  }
+
+  var json = JSON.stringify(result);
+
+  // Return JSONP if callback param present, else plain JSON
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + "(" + json + ")")
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Also handle POST
+function doPost(e) {
+  return doGet(e);
+}
+
+// ─── SHEET SETUP ──────────────────────────────────────────────────────────────
+function setupSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ensureTab(ss, "Business", "#1a73e8");
+  ensureTab(ss, "Personal", "#0f9d58");
+}
+
+function ensureTab(ss, name, headerColor) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+  }
+
+  // Only set up headers if row 1 is empty
+  var firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell !== "ID") {
+    var headers = ["ID", "Date", "Type", "Category", "Amount", "Description", "Note", "Created At"];
+    var headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setValues([headers]);
+    headerRange.setBackground(headerColor);
+    headerRange.setFontColor("#ffffff");
+    headerRange.setFontWeight("bold");
+    headerRange.setFontSize(11);
+    headerRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
+    sheet.setRowHeight(1, 36);
+    sheet.setColumnWidth(1, 140);
+    sheet.setColumnWidth(2, 100);
+    sheet.setColumnWidth(3, 90);
+    sheet.setColumnWidth(4, 150);
+    sheet.setColumnWidth(5, 100);
+    sheet.setColumnWidth(6, 220);
+    sheet.setColumnWidth(7, 260);
+    sheet.setColumnWidth(8, 160);
+  }
+}
+
+// ─── GET ENTRIES ──────────────────────────────────────────────────────────────
+function getEntries(mode) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = (mode === "business") ? "Business" : "Personal";
+  var sheet = ss.getSheetByName(sheetName);
+
+  if (!sheet) {
+    setupSheets();
+    sheet = ss.getSheetByName(sheetName);
+  }
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { success: true, entries: [] };
+
+  var data = sheet.getRange(2, 1, lastRow - 1, 8).getValues();
+  var entries = [];
+
+  for (var i = 0; i < data.length; i++) {
+    var row = data[i];
+    if (!row[0]) continue; // skip empty rows
+
+    var dateVal = row[1];
+    var dateStr = "";
+    if (dateVal) {
+      try {
+        var d = new Date(dateVal);
+        var y = d.getFullYear();
+        var m = ("0" + (d.getMonth() + 1)).slice(-2);
+        var day = ("0" + d.getDate()).slice(-2);
+        dateStr = y + "-" + m + "-" + day;
+      } catch(e) {
+        dateStr = String(dateVal);
+      }
+    }
+
+    entries.push({
+      id: String(row[0]),
+      date: dateStr,
+      type: String(row[2]),
+      category: String(row[3]),
+      amount: parseFloat(row[4]) || 0,
+      description: String(row[5] || ""),
+      note: String(row[6] || ""),
+      createdAt: String(row[7] || "")
+    });
+  }
+
+  return { success: true, entries: entries };
+}
+
+// ─── ADD ENTRY ────────────────────────────────────────────────────────────────
+function addEntry(mode, entry) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = (mode === "business") ? "Business" : "Personal";
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) { setupSheets(); sheet = ss.getSheetByName(sheetName); }
+
+  var now = new Date();
+  var ts = Utilities.formatDate(now, "America/Chicago", "MM/dd/yyyy HH:mm");
+
+  var row = [
+    entry.id,
+    entry.date,
+    entry.type,
+    entry.category,
+    entry.amount,
+    entry.description || "",
+    entry.note || "",
+    ts
+  ];
+
+  sheet.appendRow(row);
+  var lastRow = sheet.getLastRow();
+  formatRow(sheet, lastRow, entry.type);
+
+  return { success: true, id: entry.id };
+}
+
+// ─── UPDATE ENTRY ─────────────────────────────────────────────────────────────
+function updateEntry(mode, entry) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = (mode === "business") ? "Business" : "Personal";
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return { success: false, error: "Sheet not found" };
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { success: false, error: "No entries found" };
+
+  var ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]) === String(entry.id)) {
+      var rowNum = i + 2;
+      sheet.getRange(rowNum, 1, 1, 7).setValues([[
+        entry.id, entry.date, entry.type, entry.category,
+        entry.amount, entry.description || "", entry.note || ""
+      ]]);
+      formatRow(sheet, rowNum, entry.type);
+      return { success: true };
+    }
+  }
+  return { success: false, error: "Entry not found" };
+}
+
+// ─── DELETE ENTRY ─────────────────────────────────────────────────────────────
+function deleteEntry(mode, id) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = (mode === "business") ? "Business" : "Personal";
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return { success: false, error: "Sheet not found" };
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { success: false, error: "No entries" };
+
+  var ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]) === String(id)) {
+      sheet.deleteRow(i + 2);
+      return { success: true };
+    }
+  }
+  return { success: false, error: "Entry not found" };
+}
+
+// ─── FORMAT ROW ───────────────────────────────────────────────────────────────
+function formatRow(sheet, rowNum, type) {
+  var isIncome = (type === "income");
+
+  // Type cell
+  var typeCell = sheet.getRange(rowNum, 3);
+  typeCell.setBackground(isIncome ? "#e6f4ea" : "#fce8e6");
+  typeCell.setFontColor(isIncome ? "#0f9d58" : "#c5221f");
+  typeCell.setFontWeight("bold");
+  typeCell.setHorizontalAlignment("center");
+
+  // Amount cell
+  var amtCell = sheet.getRange(rowNum, 5);
+  amtCell.setNumberFormat("$#,##0.00");
+  amtCell.setFontColor(isIncome ? "#0f9d58" : "#c5221f");
+  amtCell.setFontWeight("bold");
+  amtCell.setHorizontalAlignment("right");
+
+  // Date cell
+  sheet.getRange(rowNum, 2).setNumberFormat("mm/dd/yyyy").setHorizontalAlignment("center");
+
+  // Row height
+  sheet.setRowHeight(rowNum, 28);
+}
