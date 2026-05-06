@@ -18,6 +18,7 @@
     select option{background:#161b27;color:#e2e8f0}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
     /* HEADER */
     .hdr{position:sticky;top:0;z-index:200;background:#0d1221;border-bottom:1px solid #1e2535;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -36,6 +37,18 @@
     .ab{padding:7px 15px;border-radius:8px;border:none;background:linear-gradient(135deg,#4f8ef7,#7c5ef7);color:#fff;font-size:12px;font-weight:700;cursor:pointer}
     .bnr{padding:8px 16px;border-bottom:1px solid #1e2535;display:flex;align-items:center;gap:8px}
     .main{padding:16px;max-width:1100px;margin:0 auto}
+
+    /* MONTH PICKER */
+    .month-picker{display:flex;align-items:center;gap:10px;background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:12px 18px;margin-bottom:16px;flex-wrap:wrap;animation:fadeIn .3s ease}
+    .mp-label{font-size:11px;color:#64748b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+    .mp-nav{width:30px;height:30px;border-radius:8px;border:1px solid #1e2535;background:#0d1221;color:#94a3b8;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+    .mp-nav:hover{border-color:#4f8ef7;color:#4f8ef7}
+    .mp-current{font-size:15px;font-weight:700;color:#e2e8f0;font-family:'DM Mono',monospace;min-width:140px;text-align:center}
+    .mp-months{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+    .mp-month{padding:5px 10px;border-radius:7px;border:1px solid #1e2535;background:transparent;color:#64748b;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+    .mp-month.on{border-color:#4f8ef7;background:#4f8ef722;color:#4f8ef7}
+    .mp-month:hover:not(.on){border-color:#2d3748;color:#94a3b8}
+    .mp-today{padding:5px 12px;border-radius:7px;border:none;background:#4f8ef718;color:#4f8ef7;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
 
     /* SETUP */
     .setup{background:#fbbf2415;border:1px solid #fbbf2440;border-radius:14px;padding:20px;margin-bottom:20px}
@@ -57,7 +70,7 @@
     .ltxt{color:#64748b;font-size:14px}
 
     /* STATS */
-    .sg{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .sg{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;animation:fadeIn .3s ease}
     .sc{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;flex:1;min-width:130px}
     .sl{font-size:10px;color:#64748b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
     .sv{font-size:20px;font-weight:700;font-family:'DM Mono',monospace}
@@ -65,7 +78,7 @@
 
     /* CHARTS */
     .cr{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-    .cc{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;flex:1;min-width:200px}
+    .cc{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;flex:1;min-width:200px;animation:fadeIn .3s ease}
     .ct{font-size:10px;color:#64748b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
     .bc{display:flex;align-items:flex-end;gap:5px;height:80px}
     .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -78,11 +91,15 @@
     .dd{width:8px;height:8px;border-radius:2px;flex-shrink:0}
     .dn{font-size:11px;color:#94a3b8}
     .dv{font-size:10px;font-family:'DM Mono',monospace;color:#e2e8f0;margin-left:auto;padding-left:8px}
-    .sumc{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;margin-bottom:16px}
+    .sumc{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;margin-bottom:16px;animation:fadeIn .3s ease}
     .sumr{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
     .sumi{flex:1;min-width:100px}
     .suml{font-size:10px;color:#475569;margin-bottom:3px}
     .sumv{font-size:18px;font-weight:700;font-family:'DM Mono',monospace}
+
+    /* WEEKLY BAR SECTION */
+    .week-section{background:#161b27;border:1px solid #1e2535;border-radius:14px;padding:16px 18px;margin-bottom:16px;animation:fadeIn .3s ease}
+    .week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 
     /* ENTRIES */
     .fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
@@ -90,7 +107,7 @@
     .fb.on{border-color:#4f8ef7;background:#4f8ef722;color:#4f8ef7}
     .si{margin-left:auto;background:#161b27;border:1px solid #1e2535;border-radius:8px;padding:6px 13px;color:#e2e8f0;font-size:12px;outline:none;min-width:160px}
     .el{display:flex;flex-direction:column;gap:8px}
-    .ec{background:#161b27;border:1px solid #1e2535;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;border-left-width:3px}
+    .ec{background:#161b27;border:1px solid #1e2535;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;border-left-width:3px;animation:fadeIn .2s ease}
     .eb{flex:1;min-width:0}
     .et{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
     .en{font-size:13px;font-weight:600;color:#e2e8f0}
@@ -134,375 +151,370 @@
 <body>
 <div id="app"></div>
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
 var SCRIPT_URL = localStorage.getItem("oxif_url") || "";
-
-// ─── CONSTANTS ────────────────────────────────────────────────────────────────
 var BIZ_CATS = JSON.parse(localStorage.getItem("oxif_biz_cats")||"null") || ["Meta Ads","Google Ads","Supplies","Labor","Fuel","Franchise Fees","Equipment","Vehicle","Insurance","Food","Misc","Other"];
 var PER_CATS = JSON.parse(localStorage.getItem("oxif_per_cats")||"null") || ["Housing","Food","Transport","Utilities","Entertainment","Healthcare","Misc","Other"];
 var COLORS = {"Meta Ads":"#4f8ef7","Google Ads":"#f7a94f","Supplies":"#a78bfa","Labor":"#34d399","Fuel":"#f87171","Franchise Fees":"#60a5fa","Equipment":"#fbbf24","Vehicle":"#c084fc","Insurance":"#2dd4bf","Food":"#fb923c","Misc":"#94a3b8","Other":"#64748b","Housing":"#f472b6","Transport":"#38bdf8","Utilities":"#4ade80","Entertainment":"#facc15","Healthcare":"#f97316"};
-var gc = function(c){return COLORS[c]||"#6366f1"};
-var gid = function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
-var td = function(){return new Date().toISOString().slice(0,10)};
-var fc = function(n){return"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
-var fd = function(s){if(!s)return"";var p=s.split("-");return p[1]+"/"+p[2]+"/"+p[0]};
-function wkRange(){var d=new Date(),dy=d.getDay(),s=new Date(d);s.setDate(d.getDate()-dy);var e=new Date(s);e.setDate(s.getDate()+6);return{s:s.toISOString().slice(0,10),e:e.toISOString().slice(0,10)}}
-function moRange(){var n=new Date(),y=n.getFullYear(),m=n.getMonth();return{s:new Date(y,m,1).toISOString().slice(0,10),e:new Date(y,m+1,0).toISOString().slice(0,10)}}
+var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var MONTHS_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+var gc=function(c){return COLORS[c]||"#6366f1"};
+var gid=function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
+var now=new Date();
+var fc=function(n){return"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
+var fd=function(s){if(!s)return"";var p=s.split("-");return p[1]+"/"+p[2]+"/"+p[0]};
 var inR=function(d,s,e){return d>=s&&d<=e};
 var sum=function(a,t){return a.filter(function(e){return!t||e.type===t}).reduce(function(s,e){return s+(e.amount||0)},0)};
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-var S = {
-  mode:"business", view:"dashboard",
-  showForm:false, showCat:false, editing:null,
-  filter:"all", search:"",
-  biz:[], per:[],
-  sync: SCRIPT_URL?"init":"setup",
-  loading:false, lmsg:"Loading..."
+function moRange(month,year){
+  return{
+    s:new Date(year,month,1).toISOString().slice(0,10),
+    e:new Date(year,month+1,0).toISOString().slice(0,10)
+  };
+}
+function wkRange(){
+  var d=new Date(),dy=d.getDay(),s=new Date(d);
+  s.setDate(d.getDate()-dy);
+  var e=new Date(s);e.setDate(s.getDate()+6);
+  return{s:s.toISOString().slice(0,10),e:e.toISOString().slice(0,10)};
+}
+
+var S={
+  mode:"business",view:"dashboard",
+  showForm:false,showCat:false,editing:null,
+  filter:"all",search:"",
+  biz:[],per:[],
+  sync:SCRIPT_URL?"init":"setup",
+  loading:false,lmsg:"Loading...",
+  // Month picker state
+  selMonth: now.getMonth(),   // 0-based
+  selYear:  now.getFullYear()
 };
 var ents=function(){return S.mode==="business"?S.biz:S.per};
 var cats=function(){return S.mode==="business"?BIZ_CATS:PER_CATS};
-var dform=function(){return{type:"expense",date:td(),category:cats()[0],amount:"",description:"",note:""}};
-S.form = dform();
+var dform=function(){return{type:"expense",date:new Date().toISOString().slice(0,10),category:cats()[0],amount:"",description:"",note:""}};
+S.form=dform();
 
-// ─── JSONP API ────────────────────────────────────────────────────────────────
-// Uses script-tag JSONP — the ONLY method that reliably works with Google Apps Script
-// from a static GitHub Pages site without CORS issues
-function jsonp(params, timeoutMs) {
-  return new Promise(function(resolve) {
-    var cbName = "_cb" + gid();
-    var script = document.createElement("script");
-    var done = false;
-
-    var timer = setTimeout(function() {
-      if(done) return; done = true;
-      cleanup();
-      resolve({success:false, error:"Timeout — check that 'Who has access' is set to Anyone and redeploy."});
-    }, timeoutMs || 12000);
-
-    function cleanup() {
-      clearTimeout(timer);
-      try{ delete window[cbName]; }catch(e){}
-      if(script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    window[cbName] = function(data) {
-      if(done) return; done = true;
-      cleanup();
-      resolve(data);
-    };
-
-    var p = Object.assign({}, params, {callback: cbName});
-    var qs = Object.keys(p).map(function(k){
-      return encodeURIComponent(k)+"="+encodeURIComponent(p[k]);
-    }).join("&");
-
-    script.src = SCRIPT_URL + "?" + qs;
-    script.onerror = function() {
-      if(done) return; done = true;
-      cleanup();
-      resolve({success:false, error:"Script load failed — check your Web App URL."});
-    };
+// ─── JSONP ────────────────────────────────────────────────────────────────────
+function jsonp(params,ms){
+  return new Promise(function(resolve){
+    var cb="_cb"+gid(),script=document.createElement("script"),done=false;
+    var timer=setTimeout(function(){if(done)return;done=true;cleanup();resolve({success:false,error:"Timeout — verify deployment settings."});},ms||12000);
+    function cleanup(){clearTimeout(timer);try{delete window[cb];}catch(e){}if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=function(data){if(done)return;done=true;cleanup();resolve(data);};
+    var p=Object.assign({},params,{callback:cb});
+    var qs=Object.keys(p).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(p[k]);}).join("&");
+    script.src=SCRIPT_URL+"?"+qs;
+    script.onerror=function(){if(done)return;done=true;cleanup();resolve({success:false,error:"Script load failed."});};
     document.head.appendChild(script);
   });
 }
 
-async function api(params) {
-  return jsonp(params);
+async function loadMode(mode){
+  var r=await jsonp({action:"getEntries",mode:mode});
+  if(r&&r.success){if(mode==="business")S.biz=r.entries||[];else S.per=r.entries||[];S.sync="ok";}
+  else S.sync="err";
 }
 
-async function loadMode(mode) {
-  var r = await api({action:"getEntries", mode:mode});
-  if(r && r.success) {
-    if(mode==="business") S.biz = r.entries||[];
-    else S.per = r.entries||[];
-    S.sync = "ok";
-  } else {
-    S.sync = "err";
-    console.error("Load failed:", r && r.error);
-  }
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-async function boot() {
-  if(!SCRIPT_URL){ S.sync="setup"; render(); return; }
-  S.loading=true; S.lmsg="Connecting to Google Sheets..."; render();
-  // Setup sheets + load data
-  await api({action:"setup"});
+async function boot(){
+  if(!SCRIPT_URL){S.sync="setup";render();return;}
+  S.loading=true;S.lmsg="Connecting to Google Sheets...";render();
+  await jsonp({action:"setup"});
   await loadMode("business");
   await loadMode("personal");
-  S.loading=false; render();
+  S.loading=false;render();
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-function render() {
-  document.getElementById("app").innerHTML =
-    hdr() + bnr() +
-    '<div class="main">' +
-    (S.sync==="setup" ? setupBanner() : "") +
-    (S.view==="dashboard" ? dashboard() : entries()) +
-    '</div>' +
-    (S.showForm ? formModal() : "") +
-    (S.showCat ? catModal() : "") +
-    (S.loading ? '<div class="lov"><div class="spinner"></div><div class="ltxt">'+S.lmsg+'</div></div>' : "");
-
+function render(){
+  document.getElementById("app").innerHTML=
+    hdr()+bnr()+'<div class="main">'+
+    (S.sync==="setup"?setupBanner():"")+
+    (S.view==="dashboard"?dashboard():entriesView())+
+    '</div>'+
+    (S.showForm?formModal():"")+
+    (S.showCat?catModal():"")+
+    (S.loading?'<div class="lov"><div class="spinner"></div><div class="ltxt">'+S.lmsg+'</div></div>':"");
   bindAll();
-
-  // Attach connect button directly
-  var cb = document.getElementById("__connectBtn");
-  if(cb) cb.addEventListener("click", doConnect);
+  var cb=document.getElementById("__connectBtn");
+  if(cb) cb.addEventListener("click",doConnect);
 }
 
-// ─── SETUP BANNER ─────────────────────────────────────────────────────────────
-function setupBanner() {
-  return '<div class="setup">'+
-    '<h3>⚡ Connect to Google Sheets</h3>'+
-    '<ul class="steps">'+
-    '<li>1. Open your Google Sheet → <strong>Extensions → Apps Script</strong></li>'+
-    '<li>2. Delete all existing code → paste the full <strong>Code.gs</strong> content → <strong>Save 💾</strong></li>'+
-    '<li>3. Click <strong>Deploy → New Deployment</strong></li>'+
-    '<li>4. Click the ⚙️ gear → select <strong>Web App</strong></li>'+
-    '<li>5. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong></li>'+
-    '<li>6. Click <strong>Deploy</strong> → authorize → copy the <strong>Web App URL</strong></li>'+
-    '</ul>'+
-    '<input class="url-input" id="__urlInput" placeholder="https://script.google.com/macros/s/.../exec" value="'+(localStorage.getItem("oxif_url")||"")+'"/>'+
-    '<div id="__msg"></div>'+
-    '<button class="conn-btn" id="__connectBtn"><span class="btn-txt">🔗 Connect Now</span></button>'+
-  '</div>';
+// ─── SETUP ────────────────────────────────────────────────────────────────────
+function setupBanner(){
+  return'<div class="setup"><h3>⚡ Connect to Google Sheets</h3>'+
+  '<ul class="steps">'+
+  '<li>1. Open your Google Sheet → <strong>Extensions → Apps Script</strong></li>'+
+  '<li>2. Delete all code → paste the new <strong>Code.gs</strong> → <strong>Save 💾</strong></li>'+
+  '<li>3. <strong>Deploy → New Deployment</strong> → ⚙️ → <strong>Web App</strong></li>'+
+  '<li>4. Execute as: <strong>Me</strong> | Who has access: <strong>Anyone</strong></li>'+
+  '<li>5. Deploy → Authorize → copy <strong>Web App URL</strong></li>'+
+  '</ul>'+
+  '<input class="url-input" id="__urlInput" placeholder="https://script.google.com/macros/s/.../exec" value="'+(localStorage.getItem("oxif_url")||"")+'"/>'+
+  '<div id="__msg"></div>'+
+  '<button class="conn-btn" id="__connectBtn"><span class="btn-txt">🔗 Connect Now</span></button></div>';
 }
 
-async function doConnect() {
-  var input = document.getElementById("__urlInput");
-  var msg = document.getElementById("__msg");
-  var btn = document.getElementById("__connectBtn");
-  if(!input||!msg||!btn) return;
-
-  var url = input.value.trim();
-  if(!url || !url.startsWith("https://script.google.com")) {
-    msg.className="err-box"; msg.textContent="❌ Paste a valid Google Apps Script URL (starts with https://script.google.com)"; return;
-  }
-
-  btn.disabled=true;
-  var txt = btn.querySelector(".btn-txt");
-  if(txt) txt.textContent="Connecting...";
-  btn.innerHTML='<div class="mini-spin"></div><span>Connecting...</span>';
-  msg.innerHTML="";
-
-  SCRIPT_URL = url;
-
-  var r = await jsonp({action:"ping"}, 10000);
-  if(r && r.success) {
-    localStorage.setItem("oxif_url", url);
-    msg.className="ok-box"; msg.textContent="✅ Connected! Loading your data...";
-    setTimeout(function(){ boot(); }, 800);
+async function doConnect(){
+  var input=document.getElementById("__urlInput"),msg=document.getElementById("__msg"),btn=document.getElementById("__connectBtn");
+  if(!input||!msg||!btn)return;
+  var url=input.value.trim();
+  if(!url||!url.startsWith("https://script.google.com")){msg.className="err-box";msg.textContent="❌ Paste a valid Google Apps Script URL.";return;}
+  btn.disabled=true;btn.innerHTML='<div class="mini-spin"></div><span>Connecting...</span>';msg.innerHTML="";
+  SCRIPT_URL=url;
+  var r=await jsonp({action:"ping"},10000);
+  if(r&&r.success){
+    localStorage.setItem("oxif_url",url);
+    msg.className="ok-box";msg.textContent="✅ Connected! Loading data...";
+    setTimeout(function(){boot();},600);
   } else {
-    SCRIPT_URL = "";
-    btn.disabled=false;
+    SCRIPT_URL="";btn.disabled=false;
     btn.innerHTML='<span class="btn-txt">🔗 Connect Now</span>';
     msg.className="err-box";
-    msg.textContent="❌ " + (r&&r.error ? r.error : "Could not connect. Make sure: (1) Code.gs is saved, (2) Deployed as Web App, (3) Access set to Anyone.");
+    msg.textContent="❌ "+(r&&r.error?r.error:"Could not connect. Ensure access is set to Anyone and redeploy.");
   }
 }
 
 // ─── HEADER ───────────────────────────────────────────────────────────────────
-function hdr() {
-  var dc = {ok:"ok",busy:"busy",init:"busy",err:"err",setup:""}[S.sync]||"";
-  var dl = {ok:"✓ Synced",busy:"Connecting...",init:"Loading...",err:"Sync error — reconnect",setup:"Not connected"}[S.sync]||"";
-  return '<div class="hdr">'+
-    '<div class="logo"><div class="logo-icon">🧹</div>'+
-    '<div><div class="logo-name">Oxi Fresh Tracker <span class="sdot '+dc+'"></span></div>'+
-    '<div class="logo-sub">'+dl+'</div></div></div>'+
-    '<div class="msw">'+
-    '<button class="mbtn '+(S.mode==="business"?"on":"off")+'" data-a="setMode" data-v="business">🏢 Business</button>'+
-    '<button class="mbtn '+(S.mode==="personal"?"on":"off")+'" data-a="setMode" data-v="personal">🏠 Personal</button>'+
-    '</div>'+
-    '<div class="navs">'+
-    '<button class="nb '+(S.view==="dashboard"?"on":"")+'" data-a="setView" data-v="dashboard">📊 Dashboard</button>'+
-    '<button class="nb '+(S.view==="entries"?"on":"")+'" data-a="setView" data-v="entries">📋 Entries</button>'+
-    '<button class="nb" data-a="openCat">⚙️ Categories</button>'+
-    '<button class="nb" data-a="refresh">🔄 Refresh</button>'+
-    '<button class="ab" data-a="openForm">+ Add Entry</button>'+
-    '</div></div>';
+function hdr(){
+  var dc={ok:"ok",busy:"busy",init:"busy",err:"err",setup:""}[S.sync]||"";
+  var dl={ok:"✓ Synced to Google Sheets",busy:"Connecting...",init:"Loading...",err:"Sync error — reconnect",setup:"Not connected"}[S.sync]||"";
+  return'<div class="hdr">'+
+  '<div class="logo"><div class="logo-icon">🧹</div>'+
+  '<div><div class="logo-name">Oxi Fresh Tracker <span class="sdot '+dc+'"></span></div>'+
+  '<div class="logo-sub">'+dl+'</div></div></div>'+
+  '<div class="msw">'+
+  '<button class="mbtn '+(S.mode==="business"?"on":"off")+'" data-a="setMode" data-v="business">🏢 Business</button>'+
+  '<button class="mbtn '+(S.mode==="personal"?"on":"off")+'" data-a="setMode" data-v="personal">🏠 Personal</button>'+
+  '</div>'+
+  '<div class="navs">'+
+  '<button class="nb '+(S.view==="dashboard"?"on":"")+'" data-a="setView" data-v="dashboard">📊 Dashboard</button>'+
+  '<button class="nb '+(S.view==="entries"?"on":"")+'" data-a="setView" data-v="entries">📋 Entries</button>'+
+  '<button class="nb" data-a="openCat">⚙️ Categories</button>'+
+  '<button class="nb" data-a="refresh">🔄 Refresh</button>'+
+  '<button class="ab" data-a="openForm">+ Add Entry</button>'+
+  '</div></div>';
 }
 
-function bnr() {
+function bnr(){
   var c=S.mode==="business"?"#4f8ef7":"#34d399";
-  var lbl=S.mode==="business"?"🏢 Business Mode — Oxi Fresh Houston":"🏠 Personal Mode";
-  return '<div class="bnr" style="background:'+c+'08">'+
-    '<span style="font-size:12px;font-weight:600;color:'+c+'">'+lbl+'</span>'+
-    '<span style="font-size:11px;color:#475569">'+ents().length+' entries</span></div>';
+  return'<div class="bnr" style="background:'+c+'08">'+
+  '<span style="font-size:12px;font-weight:600;color:'+c+'">'+(S.mode==="business"?"🏢 Business Mode — Oxi Fresh Houston":"🏠 Personal Mode")+'</span>'+
+  '<span style="font-size:11px;color:#475569">'+ents().length+' entries</span></div>';
+}
+
+// ─── MONTH PICKER ─────────────────────────────────────────────────────────────
+function monthPicker(){
+  var nowM=now.getMonth(), nowY=now.getFullYear();
+  var isCurrentMonth=(S.selMonth===nowM&&S.selYear===nowY);
+  return'<div class="month-picker">'+
+  '<span class="mp-label">Period</span>'+
+  '<button class="mp-nav" data-a="prevYear" title="Previous year">«</button>'+
+  '<button class="mp-nav" data-a="prevMonth" title="Previous month">‹</button>'+
+  '<span class="mp-current">'+MONTHS_FULL[S.selMonth]+' '+S.selYear+'</span>'+
+  '<button class="mp-nav" data-a="nextMonth" title="Next month">›</button>'+
+  '<button class="mp-nav" data-a="nextYear" title="Next year">»</button>'+
+  '<div class="mp-months">'+
+  MONTHS.map(function(m,i){
+    return'<button class="mp-month'+(i===S.selMonth?" on":"")+'" data-a="setMonth" data-v="'+i+'">'+m+'</button>';
+  }).join("")+
+  '</div>'+
+  (!isCurrentMonth?'<button class="mp-today" data-a="goToday">Today</button>':"")+
+  '</div>';
 }
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
-function dashboard() {
-  var e=ents(), today=td(), wk=wkRange(), mo=moRange();
-  var te=e.filter(function(x){return x.date===today});
-  var we=e.filter(function(x){return inR(x.date,wk.s,wk.e)});
-  var me=e.filter(function(x){return inR(x.date,mo.s,mo.e)});
-  var wn=sum(we,"income")-sum(we,"expense"), mn=sum(me,"income")-sum(me,"expense");
+function dashboard(){
+  var e=ents();
+  var mo=moRange(S.selMonth,S.selYear);
+  var wk=wkRange();
+  var todayStr=new Date().toISOString().slice(0,10);
+  var todayE=e.filter(function(x){return x.date===todayStr});
+  var weekE=e.filter(function(x){return inR(x.date,wk.s,wk.e)});
+  var monthE=e.filter(function(x){return inR(x.date,mo.s,mo.e)});
+  var wn=sum(weekE,"income")-sum(weekE,"expense");
+  var mn=sum(monthE,"income")-sum(monthE,"expense");
+  var isCurrentMonth=(S.selMonth===now.getMonth()&&S.selYear===now.getFullYear());
 
+  // Category breakdown for selected month
   var cm={};
-  me.filter(function(x){return x.type==="expense"}).forEach(function(x){cm[x.category]=(cm[x.category]||0)+x.amount});
-  var cd=Object.entries(cm).sort(function(a,b){return b[1]-a[1]}).slice(0,8).map(function(p){return{cat:p[0],val:p[1],color:gc(p[0])}});
+  monthE.filter(function(x){return x.type==="expense"}).forEach(function(x){cm[x.category]=(cm[x.category]||0)+x.amount;});
+  var cd=Object.entries(cm).sort(function(a,b){return b[1]-a[1]}).slice(0,8).map(function(p){return{cat:p[0],val:p[1],color:gc(p[0])};});
 
-  var days=[];
-  for(var i=6;i>=0;i--){
-    var d=new Date(); d.setDate(d.getDate()-i);
-    var ds=d.toISOString().slice(0,10);
-    var dv=e.filter(function(x){return x.date===ds&&x.type==="expense"}).reduce(function(s,x){return s+x.amount},0);
-    days.push({lbl:["Su","Mo","Tu","We","Th","Fr","Sa"][d.getDay()],val:dv,isT:ds===today});
+  // Daily bars — show days of selected month (up to today if current month)
+  var barsHtml="";
+  if(isCurrentMonth){
+    // This week bars
+    var days=[];
+    for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var ds=d.toISOString().slice(0,10);var dv=e.filter(function(x){return x.date===ds&&x.type==="expense"}).reduce(function(s,x){return s+x.amount;},0);days.push({lbl:["Su","Mo","Tu","We","Th","Fr","Sa"][d.getDay()],val:dv,isT:ds===todayStr});}
+    var mx=Math.max.apply(null,days.map(function(d){return d.val}).concat([1]));
+    barsHtml='<div class="week-section"><div class="week-header"><div class="ct" style="margin-bottom:0">Daily Expenses — This Week</div></div>'+
+    '<div class="bc">'+days.map(function(d){var h=Math.max((d.val/mx)*60,d.val>0?3:0);return'<div class="bcol"><div class="bv">'+(d.val>0?"$"+(d.val>=1000?(d.val/1000).toFixed(1)+"k":d.val.toFixed(0)):"")+
+    '</div><div class="bf" style="height:'+h+'px;background:'+(d.isT?"#4f8ef7":"#4f8ef755")+'"></div><div class="bl">'+d.lbl+'</div></div>';}).join("")+'</div></div>';
+  } else {
+    // Show daily bars for the selected month
+    var daysInMo=new Date(S.selYear,S.selMonth+1,0).getDate();
+    var moDays=[];
+    for(var j=1;j<=daysInMo;j++){
+      var ds2=S.selYear+"-"+("0"+(S.selMonth+1)).slice(-2)+"-"+("0"+j).slice(-2);
+      var dv2=e.filter(function(x){return x.date===ds2&&x.type==="expense"}).reduce(function(s,x){return s+x.amount;},0);
+      moDays.push({lbl:j%5===1||j===daysInMo?String(j):"",val:dv2,ds:ds2});
+    }
+    var mx2=Math.max.apply(null,moDays.map(function(d){return d.val}).concat([1]));
+    barsHtml='<div class="week-section"><div class="week-header"><div class="ct" style="margin-bottom:0">Daily Expenses — '+MONTHS_FULL[S.selMonth]+' '+S.selYear+'</div></div>'+
+    '<div class="bc">'+moDays.map(function(d){var h=Math.max((d.val/mx2)*60,d.val>0?2:0);return'<div class="bcol"><div class="bv">'+(d.val>0?"$"+(d.val>=1000?(d.val/1000).toFixed(1)+"k":Math.round(d.val)):"")+
+    '</div><div class="bf" style="height:'+h+'px;background:#4f8ef7aa"></div><div class="bl">'+d.lbl+'</div></div>';}).join("")+'</div></div>';
   }
-  var mx=Math.max.apply(null,days.map(function(d){return d.val}).concat([1]));
 
-  return '<div class="sg">'+
-    stat("Today Expenses",fc(sum(te,"expense")),null,"#f87171")+
-    stat("Today Income",fc(sum(te,"income")),null,"#34d399")+
-    stat("Week Net",fc(Math.abs(wn)),wn>=0?"▲ Profit":"▼ Loss",wn>=0?"#34d399":"#f87171")+
-    stat("Month Net",fc(Math.abs(mn)),mn>=0?"▲ Profit":"▼ Loss",mn>=0?"#34d399":"#f87171")+
-  '</div><div class="cr">'+
-    '<div class="cc"><div class="ct">Daily Expenses — This Week</div>'+
-    '<div class="bc">'+days.map(function(d){
-      var h=Math.max((d.val/mx)*60,d.val>0?3:0);
-      var lv=d.val>0?"$"+(d.val>=1000?(d.val/1000).toFixed(1)+"k":d.val.toFixed(0)):"";
-      return'<div class="bcol"><div class="bv">'+lv+'</div><div class="bf" style="height:'+h+'px;background:'+(d.isT?"#4f8ef7":"#4f8ef755")+'"></div><div class="bl">'+d.lbl+'</div></div>';
-    }).join("")+'</div></div>'+
-    (cd.length?'<div class="cc"><div class="ct">Monthly by Category</div><div class="dr">'+donut(cd)+
-    '<div class="dl">'+cd.slice(0,5).map(function(d){return'<div class="di"><div class="dd" style="background:'+d.color+'"></div><span class="dn">'+d.cat+'</span><span class="dv">'+fc(d.val)+'</span></div>'}).join("")+'</div></div></div>':"")
-  +'</div>'+
-  '<div class="sumc"><div class="ct">This Month — Summary</div><div class="sumr">'+
-    [{l:"Total Income",v:fc(sum(me,"income")),c:"#34d399"},{l:"Total Expenses",v:fc(sum(me,"expense")),c:"#f87171"},{l:"Net P&L",v:(mn<0?"-":"")+fc(Math.abs(mn)),c:mn>=0?"#34d399":"#f87171"},{l:"Transactions",v:me.length,c:"#4f8ef7"}]
-    .map(function(x){return'<div class="sumi"><div class="suml">'+x.l+'</div><div class="sumv" style="color:'+x.c+'">'+x.v+'</div></div>'}).join("")
-  +'</div></div>';
+  return monthPicker()+
+  '<div class="sg">'+
+  stat("Today Expenses",fc(sum(todayE,"expense")),null,"#f87171")+
+  stat("Today Income",fc(sum(todayE,"income")),null,"#34d399")+
+  stat(MONTHS[S.selMonth]+" Income",fc(sum(monthE,"income")),null,"#34d399")+
+  stat(MONTHS[S.selMonth]+" Expenses",fc(sum(monthE,"expense")),null,"#f87171")+
+  '</div>'+
+  '<div class="cr">'+
+  barsHtml+
+  (cd.length?
+    '<div class="cc"><div class="ct">'+MONTHS_FULL[S.selMonth]+' by Category</div>'+
+    '<div class="dr">'+donut(cd)+
+    '<div class="dl">'+cd.slice(0,5).map(function(d){return'<div class="di"><div class="dd" style="background:'+d.color+'"></div><span class="dn">'+d.cat+'</span><span class="dv">'+fc(d.val)+'</span></div>';}).join("")+'</div></div></div>'
+  :"")+
+  '</div>'+
+  '<div class="sumc"><div class="ct">'+MONTHS_FULL[S.selMonth]+' '+S.selYear+' — Summary</div>'+
+  '<div class="sumr">'+
+  [{l:"Total Income",v:fc(sum(monthE,"income")),c:"#34d399"},
+   {l:"Total Expenses",v:fc(sum(monthE,"expense")),c:"#f87171"},
+   {l:"Net P&L",v:(mn<0?"-":"")+fc(Math.abs(mn)),c:mn>=0?"#34d399":"#f87171"},
+   {l:"Transactions",v:monthE.length,c:"#4f8ef7"}]
+  .map(function(x){return'<div class="sumi"><div class="suml">'+x.l+'</div><div class="sumv" style="color:'+x.c+'">'+x.v+'</div></div>';}).join("")+
+  '</div></div>';
 }
 
-function stat(l,v,sub,c){return'<div class="sc"><div class="sl">'+l+'</div><div class="sv" style="color:'+(c||"#e2e8f0")+'">'+v+'</div>'+(sub?'<div class="ss">'+sub+'</div>':'')+'</div>'}
+function stat(l,v,sub,c){return'<div class="sc"><div class="sl">'+l+'</div><div class="sv" style="color:'+(c||"#e2e8f0")+'">'+v+'</div>'+(sub?'<div class="ss">'+sub+'</div>':'')+'</div>';}
 
 function donut(data){
-  var tot=data.reduce(function(s,d){return s+d.val},0); if(!tot) return"";
+  var tot=data.reduce(function(s,d){return s+d.val;},0);if(!tot)return"";
   var r=40,cx=55,cy=55,circ=2*Math.PI*r,off=0;
-  var segs=data.map(function(d){var dash=d.val/tot*circ,seg=Object.assign({},d,{dash:dash,gap:circ-dash,off:off});off+=dash;return seg});
+  var segs=data.map(function(d){var dash=d.val/tot*circ,seg=Object.assign({},d,{dash:dash,gap:circ-dash,off:off});off+=dash;return seg;});
   return'<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#1e2535" stroke-width="16"/>'+
-    segs.map(function(s){return'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+s.color+'" stroke-width="16" stroke-dasharray="'+s.dash+' '+s.gap+'" stroke-dashoffset="'+-s.off+'" transform="rotate(-90 '+cx+' '+cy+')"/>'}).join("")+
-    '<text x="'+cx+'" y="'+(cy-5)+'" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="DM Mono">TOTAL</text>'+
-    '<text x="'+cx+'" y="'+(cy+9)+'" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="bold" font-family="DM Mono">$'+(tot/1000).toFixed(1)+'k</text></svg>';
+  segs.map(function(s){return'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+s.color+'" stroke-width="16" stroke-dasharray="'+s.dash+' '+s.gap+'" stroke-dashoffset="'+-s.off+'" transform="rotate(-90 '+cx+' '+cy+')"/>';}).join("")+
+  '<text x="'+cx+'" y="'+(cy-5)+'" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="DM Mono">TOTAL</text>'+
+  '<text x="'+cx+'" y="'+(cy+9)+'" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="bold" font-family="DM Mono">$'+(tot/1000).toFixed(1)+'k</text></svg>';
 }
 
-// ─── ENTRIES ──────────────────────────────────────────────────────────────────
-function entries() {
+// ─── ENTRIES VIEW ─────────────────────────────────────────────────────────────
+function entriesView(){
   var list=ents()
-    .filter(function(e){return S.filter==="all"||e.type===S.filter})
-    .filter(function(e){
-      if(!S.search) return true;
-      var s=S.search.toLowerCase();
-      return(e.description||"").toLowerCase().indexOf(s)>-1||(e.category||"").toLowerCase().indexOf(s)>-1||(e.note||"").toLowerCase().indexOf(s)>-1;
-    })
-    .sort(function(a,b){return b.date.localeCompare(a.date)});
-
-  return '<div class="fr">'+
-    ["all","expense","income"].map(function(f){
-      var lbl=f==="all"?"All Entries":f==="income"?"💰 Income":"💸 Expenses";
-      return'<button class="fb '+(S.filter===f?"on":"")+'" data-a="setFilter" data-v="'+f+'">'+lbl+'</button>';
-    }).join("")+
-    '<input class="si" id="__search" placeholder="Search..." value="'+S.search+'"/>'+
-  '</div>'+
+    .filter(function(e){return S.filter==="all"||e.type===S.filter;})
+    .filter(function(e){if(!S.search)return true;var s=S.search.toLowerCase();return(e.description||"").toLowerCase().indexOf(s)>-1||(e.category||"").toLowerCase().indexOf(s)>-1||(e.note||"").toLowerCase().indexOf(s)>-1;})
+    .sort(function(a,b){return b.date.localeCompare(a.date);});
+  return'<div class="fr">'+
+  ["all","expense","income"].map(function(f){return'<button class="fb '+(S.filter===f?"on":"")+'" data-a="setFilter" data-v="'+f+'">'+(f==="all"?"All Entries":f==="income"?"💰 Income":"💸 Expenses")+'</button>';}).join("")+
+  '<input class="si" id="__search" placeholder="Search entries..." value="'+S.search+'"/></div>'+
   '<div class="el">'+(list.length===0
     ?'<div class="empty">'+(SCRIPT_URL?"No entries yet — tap + Add Entry 👆":"Connect to Google Sheets first ☝️")+'</div>'
-    :list.map(function(e){
-      var inc=e.type==="income",c=inc?"#34d399":gc(e.category);
+    :list.map(function(e){var inc=e.type==="income",c=inc?"#34d399":gc(e.category);
       return'<div class="ec" style="border-left-color:'+c+'">'+
-        '<div class="eb"><div class="et"><span class="en">'+(e.description||e.category)+'</span>'+
-        '<span class="badge" style="background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+e.category+'</span></div>'+
-        '<div class="em"><span class="ed">'+fd(e.date)+'</span>'+(e.note?'<span class="enote">📝 '+e.note+'</span>':"")+'</div></div>'+
-        '<div class="er"><div class="ea" style="color:'+(inc?"#34d399":"#f87171")+'">'+(inc?"+":"-")+fc(e.amount)+'</div>'+
-        '<div class="eac"><button class="bedit" data-a="editEntry" data-id="'+e.id+'">Edit</button>'+
-        '<button class="bdel" data-a="delEntry" data-id="'+e.id+'">Del</button></div></div></div>';
-    }).join(""))+'</div>';
+      '<div class="eb"><div class="et"><span class="en">'+(e.description||e.category)+'</span>'+
+      '<span class="badge" style="background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+e.category+'</span></div>'+
+      '<div class="em"><span class="ed">'+fd(e.date)+'</span>'+(e.note?'<span class="enote">📝 '+e.note+'</span>':"")+
+      '</div></div><div class="er"><div class="ea" style="color:'+(inc?"#34d399":"#f87171")+'">'+(inc?"+":"-")+fc(e.amount)+'</div>'+
+      '<div class="eac"><button class="bedit" data-a="editEntry" data-id="'+e.id+'">Edit</button>'+
+      '<button class="bdel" data-a="delEntry" data-id="'+e.id+'">Del</button></div></div></div>';
+    }).join(""))+
+  '</div>';
 }
 
 // ─── FORM MODAL ───────────────────────────────────────────────────────────────
-function formModal() {
+function formModal(){
   var f=S.form,inc=f.type==="income";
   return'<div class="mbg" id="__mBg"><div class="mod">'+
-    '<div class="mhdr"><div class="mtitle">'+(S.editing?"Edit Entry":"New "+(S.mode==="business"?"Business":"Personal")+" Entry")+'</div>'+
-    '<button class="mclose" data-a="closeForm">×</button></div>'+
-    '<div class="fg">'+
-    '<div><div class="fl">Type</div><div class="tt">'+
-    '<button class="tb" data-a="setType" data-v="expense" style="border-color:'+(!inc?"#f87171":"#1e2535")+';background:'+(!inc?"#f8717122":"#161b27")+';color:'+(!inc?"#f87171":"#475569")+'">💸 Expense</button>'+
-    '<button class="tb" data-a="setType" data-v="income" style="border-color:'+(inc?"#34d399":"#1e2535")+';background:'+(inc?"#34d39922":"#161b27")+';color:'+(inc?"#34d399":"#475569")+'">💰 Income</button>'+
-    '</div></div>'+
-    '<div class="tc"><div><label class="fl">Date</label><input type="date" class="fi" id="fDate" value="'+f.date+'"/></div>'+
-    '<div><label class="fl">Amount ($)</label><input type="number" min="0" step="0.01" placeholder="0.00" class="fi" id="fAmt" value="'+(f.amount||"")+'"/></div></div>'+
-    '<div><label class="fl">Category</label><select class="fi" id="fCat">'+cats().map(function(c){return'<option value="'+c+'"'+(f.category===c?" selected":"")+'>'+c+'</option>'}).join("")+'</select></div>'+
-    '<div><label class="fl">Description</label><input type="text" placeholder="Brief description..." class="fi" id="fDesc" value="'+(f.description||"")+'"/></div>'+
-    '<div><label class="fl">Note / Memo</label><textarea placeholder="Additional notes..." class="fi" id="fNote" style="min-height:70px;resize:vertical">'+(f.note||"")+'</textarea></div>'+
-    '<div class="fa"><button class="bcancel" data-a="closeForm">Cancel</button>'+
-    '<button class="bsave" data-a="saveEntry">'+(S.editing?"Update Entry":"Save Entry")+'</button></div>'+
-    '</div></div></div>';
+  '<div class="mhdr"><div class="mtitle">'+(S.editing?"Edit Entry":"New "+(S.mode==="business"?"Business":"Personal")+" Entry")+'</div>'+
+  '<button class="mclose" data-a="closeForm">×</button></div>'+
+  '<div class="fg">'+
+  '<div><div class="fl">Type</div><div class="tt">'+
+  '<button class="tb" data-a="setType" data-v="expense" style="border-color:'+(!inc?"#f87171":"#1e2535")+';background:'+(!inc?"#f8717122":"#161b27")+';color:'+(!inc?"#f87171":"#475569")+'">💸 Expense</button>'+
+  '<button class="tb" data-a="setType" data-v="income" style="border-color:'+(inc?"#34d399":"#1e2535")+';background:'+(inc?"#34d39922":"#161b27")+';color:'+(inc?"#34d399":"#475569")+'">💰 Income</button>'+
+  '</div></div>'+
+  '<div class="tc"><div><label class="fl">Date</label><input type="date" class="fi" id="fDate" value="'+f.date+'"/></div>'+
+  '<div><label class="fl">Amount ($)</label><input type="number" min="0" step="0.01" placeholder="0.00" class="fi" id="fAmt" value="'+(f.amount||"")+'"/></div></div>'+
+  '<div><label class="fl">Category</label><select class="fi" id="fCat">'+cats().map(function(c){return'<option value="'+c+'"'+(f.category===c?" selected":"")+'>'+c+'</option>';}).join("")+'</select></div>'+
+  '<div><label class="fl">Description</label><input type="text" placeholder="Brief description..." class="fi" id="fDesc" value="'+(f.description||"")+'"/></div>'+
+  '<div><label class="fl">Note / Memo</label><textarea placeholder="Additional notes..." class="fi" id="fNote" style="min-height:70px;resize:vertical">'+(f.note||"")+'</textarea></div>'+
+  '<div class="fa"><button class="bcancel" data-a="closeForm">Cancel</button>'+
+  '<button class="bsave" data-a="saveEntry">'+(S.editing?"Update Entry":"Save Entry")+'</button></div>'+
+  '</div></div></div>';
 }
 
 // ─── CAT MODAL ────────────────────────────────────────────────────────────────
-function catModal() {
+function catModal(){
   return'<div class="mbg" id="__cBg"><div class="mod">'+
-    '<div class="mhdr"><div class="mtitle">Manage '+(S.mode==="business"?"Business":"Personal")+' Categories</div>'+
-    '<button class="mclose" data-a="closeCat">×</button></div>'+
-    '<div class="car"><input class="cai" id="__newCat" placeholder="New category name..."/>'+
-    '<button class="cab" data-a="addCat">Add</button></div>'+
-    '<div class="cg">'+cats().map(function(c){
-      return'<div class="chip" style="background:'+gc(c)+'18;border:1px solid '+gc(c)+'33">'+
-        '<div class="cdot" style="background:'+gc(c)+'"></div>'+
-        '<span class="cname">'+c+'</span>'+
-        '<button class="crm" data-a="rmCat" data-cat="'+c+'">×</button></div>';
-    }).join("")+'</div>'+
-    '<button class="bsave" style="width:100%" data-a="closeCat">Done</button>'+
-    '</div></div>';
+  '<div class="mhdr"><div class="mtitle">Manage '+(S.mode==="business"?"Business":"Personal")+' Categories</div>'+
+  '<button class="mclose" data-a="closeCat">×</button></div>'+
+  '<div class="car"><input class="cai" id="__newCat" placeholder="New category name..."/>'+
+  '<button class="cab" data-a="addCat">Add</button></div>'+
+  '<div class="cg">'+cats().map(function(c){
+    return'<div class="chip" style="background:'+gc(c)+'18;border:1px solid '+gc(c)+'33">'+
+    '<div class="cdot" style="background:'+gc(c)+'"></div><span class="cname">'+c+'</span>'+
+    '<button class="crm" data-a="rmCat" data-cat="'+c+'">×</button></div>';
+  }).join("")+'</div>'+
+  '<button class="bsave" style="width:100%" data-a="closeCat">Done</button></div></div>';
 }
 
-// ─── EVENT BINDING ────────────────────────────────────────────────────────────
-function bindAll() {
-  // Delegated clicks
-  document.addEventListener("click", onClick, {once:true});
-  // Search
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+function bindAll(){
+  document.addEventListener("click",onClick,{once:true});
   var si=document.getElementById("__search");
-  if(si) si.addEventListener("input",function(e){S.search=e.target.value;render()});
-  // Modal bg click to close
+  if(si)si.addEventListener("input",function(e){S.search=e.target.value;render();});
   var mb=document.getElementById("__mBg");
-  if(mb) mb.addEventListener("click",function(e){if(e.target===mb){S.showForm=false;S.editing=null;render()}});
+  if(mb)mb.addEventListener("click",function(e){if(e.target===mb){S.showForm=false;S.editing=null;render();}});
   var cb=document.getElementById("__cBg");
-  if(cb) cb.addEventListener("click",function(e){if(e.target===cb){S.showCat=false;render()}});
-  // Cat enter key
+  if(cb)cb.addEventListener("click",function(e){if(e.target===cb){S.showCat=false;render();}});
   var nc=document.getElementById("__newCat");
-  if(nc) nc.addEventListener("keydown",function(e){if(e.key==="Enter")doAddCat()});
+  if(nc)nc.addEventListener("keydown",function(e){if(e.key==="Enter")doAddCat();});
 }
 
-function onClick(e) {
+function onClick(e){
   var btn=e.target.closest("[data-a]");
-  if(!btn || btn.id==="__connectBtn") { document.addEventListener("click",onClick,{once:true}); return; }
-  var a=btn.dataset.a, v=btn.dataset.v, id=btn.dataset.id, cat=btn.dataset.cat;
-  var acts = {
-    setMode: function(){ S.mode=v;S.filter="all";S.search="";S.loading=true;S.lmsg="Loading "+v+" data...";render();loadMode(v).then(function(){S.loading=false;render()})},
-    setView: function(){ S.view=v;render()},
-    openForm: function(){ if(!SCRIPT_URL){alert("Connect to Google Sheets first.");return}S.editing=null;S.form=dform();S.showForm=true;render()},
-    closeForm: function(){ S.showForm=false;S.editing=null;render()},
-    openCat: function(){ S.showCat=true;render()},
-    closeCat: function(){ S.showCat=false;render()},
-    setType: function(){ S.form.type=v;render()},
-    setFilter: function(){ S.filter=v;render()},
-    saveEntry: doSave,
-    editEntry: function(){ doEdit(id)},
-    delEntry: function(){ doDel(id)},
-    addCat: doAddCat,
-    rmCat: function(){ doRmCat(cat)},
-    refresh: function(){ S.loading=true;S.lmsg="Refreshing...";render();loadMode(S.mode).then(function(){S.loading=false;render()})}
+  if(!btn||btn.id==="__connectBtn"){document.addEventListener("click",onClick,{once:true});return;}
+  var a=btn.dataset.a,v=btn.dataset.v,id=btn.dataset.id,cat=btn.dataset.cat;
+  var acts={
+    setMode:function(){S.mode=v;S.filter="all";S.search="";S.loading=true;S.lmsg="Loading "+v+" data...";render();loadMode(v).then(function(){S.loading=false;render();});},
+    setView:function(){S.view=v;render();},
+    openForm:function(){if(!SCRIPT_URL){alert("Connect to Google Sheets first.");return;}S.editing=null;S.form=dform();S.showForm=true;render();},
+    closeForm:function(){S.showForm=false;S.editing=null;render();},
+    openCat:function(){S.showCat=true;render();},
+    closeCat:function(){S.showCat=false;render();},
+    setType:function(){S.form.type=v;render();},
+    setFilter:function(){S.filter=v;render();},
+    // Month picker
+    prevMonth:function(){if(S.selMonth===0){S.selMonth=11;S.selYear--;}else S.selMonth--;render();},
+    nextMonth:function(){
+      var n=new Date();
+      if(S.selYear>n.getFullYear()||(S.selYear===n.getFullYear()&&S.selMonth>=n.getMonth()))return;
+      if(S.selMonth===11){S.selMonth=0;S.selYear++;}else S.selMonth++;render();
+    },
+    prevYear:function(){S.selYear--;render();},
+    nextYear:function(){if(S.selYear<new Date().getFullYear())S.selYear++;render();},
+    setMonth:function(){S.selMonth=parseInt(v);render();},
+    goToday:function(){S.selMonth=now.getMonth();S.selYear=now.getFullYear();render();},
+    // CRUD
+    saveEntry:doSave,
+    editEntry:function(){doEdit(id);},
+    delEntry:function(){doDel(id);},
+    addCat:doAddCat,
+    rmCat:function(){doRmCat(cat);},
+    refresh:function(){S.loading=true;S.lmsg="Refreshing...";render();loadMode(S.mode).then(function(){S.loading=false;render();});}
   };
-  if(acts[a]) acts[a]();
+  if(acts[a])acts[a]();
   else document.addEventListener("click",onClick,{once:true});
 }
 
-// ─── ACTIONS ──────────────────────────────────────────────────────────────────
 function readForm(){
   return{
     type:S.form.type,
-    date:(document.getElementById("fDate")||{}).value||td(),
+    date:(document.getElementById("fDate")||{}).value||new Date().toISOString().slice(0,10),
     amount:parseFloat((document.getElementById("fAmt")||{}).value||"0"),
     category:(document.getElementById("fCat")||{}).value||cats()[0],
     description:((document.getElementById("fDesc")||{}).value||"").trim(),
@@ -512,24 +524,23 @@ function readForm(){
 
 async function doSave(){
   var f=readForm();
-  if(!f.amount||f.amount<=0){alert("Enter a valid amount.");return}
+  if(!f.amount||f.amount<=0){alert("Enter a valid amount.");return;}
   var entry=Object.assign({},f,{id:S.editing||gid()});
   S.showForm=false;S.loading=true;S.lmsg=S.editing?"Updating...":"Saving...";render();
-
   if(S.editing){
-    if(S.mode==="business") S.biz=S.biz.map(function(e){return e.id===entry.id?entry:e});
-    else S.per=S.per.map(function(e){return e.id===entry.id?entry:e});
-    await api({action:"updateEntry",mode:S.mode,entry:JSON.stringify(entry)});
+    if(S.mode==="business")S.biz=S.biz.map(function(e){return e.id===entry.id?entry:e;});
+    else S.per=S.per.map(function(e){return e.id===entry.id?entry:e;});
+    await jsonp({action:"updateEntry",mode:S.mode,entry:JSON.stringify(entry)});
   } else {
-    if(S.mode==="business") S.biz.unshift(entry);
+    if(S.mode==="business")S.biz.unshift(entry);
     else S.per.unshift(entry);
-    await api({action:"addEntry",mode:S.mode,entry:JSON.stringify(entry)});
+    await jsonp({action:"addEntry",mode:S.mode,entry:JSON.stringify(entry)});
   }
   S.editing=null;S.loading=false;S.view="entries";render();
 }
 
 function doEdit(id){
-  var e=ents().find(function(x){return x.id===id});
+  var e=ents().find(function(x){return x.id===id;});
   if(!e)return;
   S.editing=id;S.form=Object.assign({},e);S.showForm=true;render();
 }
@@ -537,9 +548,9 @@ function doEdit(id){
 async function doDel(id){
   if(!confirm("Delete this entry?"))return;
   S.loading=true;S.lmsg="Deleting...";render();
-  if(S.mode==="business") S.biz=S.biz.filter(function(e){return e.id!==id});
-  else S.per=S.per.filter(function(e){return e.id!==id});
-  await api({action:"deleteEntry",mode:S.mode,id:id});
+  if(S.mode==="business")S.biz=S.biz.filter(function(e){return e.id!==id;});
+  else S.per=S.per.filter(function(e){return e.id!==id;});
+  await jsonp({action:"deleteEntry",mode:S.mode,id:id});
   S.loading=false;render();
 }
 
@@ -547,24 +558,23 @@ function doAddCat(){
   var v=((document.getElementById("__newCat")||{}).value||"").trim();
   if(!v)return;
   var cur=cats();
-  if(cur.indexOf(v)>-1){alert("Already exists.");return}
+  if(cur.indexOf(v)>-1){alert("Already exists.");return;}
   var upd=cur.concat([v]);
-  if(S.mode==="business"){BIZ_CATS=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd))}
-  else{PER_CATS=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd))}
+  if(S.mode==="business"){BIZ_CATS=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd));}
+  else{PER_CATS=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd));}
   render();
 }
 
 function doRmCat(cat){
   var cur=cats();
-  if(cur.length<=2){alert("Keep at least 2 categories.");return}
+  if(cur.length<=2){alert("Keep at least 2.");return;}
   if(!confirm('Remove "'+cat+'"?'))return;
-  var upd=cur.filter(function(c){return c!==cat});
-  if(S.mode==="business"){BIZ_CATS=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd))}
-  else{PER_CATS=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd))}
+  var upd=cur.filter(function(c){return c!==cat;});
+  if(S.mode==="business"){BIZ_CATS=upd;localStorage.setItem("oxif_biz_cats",JSON.stringify(upd));}
+  else{PER_CATS=upd;localStorage.setItem("oxif_per_cats",JSON.stringify(upd));}
   render();
 }
 
-// ─── BOOT ─────────────────────────────────────────────────────────────────────
 boot();
 </script>
 </body>
